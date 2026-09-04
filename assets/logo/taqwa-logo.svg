@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Outer ring multi-color spectrum gradient matching exact logo -->
+    <linearGradient id="tmConicGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="30%" stop-color="#9333EA"/>
+      <stop offset="70%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Ring with Gradient -->
+  <circle cx="250" cy="250" r="236" fill="none" stroke="url(#tmConicGrad)" stroke-width="26"/>
+
+  <!-- Inner white circular background -->
+  <circle cx="250" cy="250" r="218" fill="#FFFFFF"/>
+  <circle cx="250" cy="250" r="217" fill="none" stroke="#2563EB" stroke-width="2.5" opacity="0.8"/>
+
+  <!-- Car Silhouette: Top Red Roof & Mirrors -->
+  <path d="M 180 168 C 190 148, 220 142, 250 142 C 280 142, 310 148, 320 168 C 330 171, 342 173, 345 178 C 347 182, 338 184, 332 184 C 328 184, 318 178, 314 177 C 295 168, 205 168, 186 177 C 182 178, 172 184, 168 184 C 162 184, 153 182, 155 178 C 158 173, 170 171, 180 168 Z" fill="#D32F2F" />
+
+  <!-- Windshield & A-Pillars -->
+  <path d="M 184 174 C 205 166, 295 166, 316 174 C 322 188, 332 205, 340 216 C 300 226, 200 226, 160 216 C 168 205, 178 188, 184 174 Z" fill="none" stroke="#111827" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Car Headlights and Lower Grille Swooshes -->
+  <!-- Left headlight / bumper wing -->
+  <path d="M 148 212 C 160 215, 180 222, 205 228 C 185 233, 162 242, 152 254" fill="none" stroke="#D32F2F" stroke-width="6.5" stroke-linecap="round"/>
+  <!-- Center lower bumper bar -->
+  <path d="M 152 216 C 200 230, 300 230, 348 216" fill="none" stroke="#111827" stroke-width="7" stroke-linecap="round"/>
+  <!-- Right headlight / bumper wing -->
+  <path d="M 352 212 C 340 215, 310 222, 270 232 C 305 232, 338 238, 348 254" fill="none" stroke="#111827" stroke-width="6.5" stroke-linecap="round"/>
+
+  <!-- Brand Typography -->
+  <!-- TAQWA -->
+  <text x="250" y="302" font-family="'Outfit', 'Montserrat', 'Segoe UI', sans-serif" font-size="44" font-weight="900" letter-spacing="9" fill="#D32F2F" text-anchor="middle">TAQWA</text>
+
+  <!-- MOTORS -->
+  <text x="250" y="334" font-family="'Outfit', 'Montserrat', 'Segoe UI', sans-serif" font-size="21" font-weight="800" letter-spacing="6" fill="#111827" text-anchor="middle">MOTORS</text>
+
+  <!-- TM Geometric Shield / Monogram at bottom -->
+  <!-- Top Red Horizontal Bar -->
+  <rect x="175" y="348" width="150" height="10" fill="#D32F2F" rx="2"/>
+
+  <!-- Red T Stem & Left M Wing -->
+  <path d="M 215 358 L 245 358 L 222 422 L 195 422 Z" fill="#D32F2F"/>
+  <path d="M 245 358 L 265 412 L 245 422 L 230 380 Z" fill="#D32F2F"/>
+
+  <!-- Black Right M Wing and Lower Chevron -->
+  <path d="M 175 368 L 250 428 L 325 368 L 325 385 L 250 445 L 175 385 Z" fill="#111827"/>
+  <path d="M 255 358 L 285 358 L 305 408 L 285 415 Z" fill="#111827"/>
+</svg>

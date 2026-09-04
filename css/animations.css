@@ -1,0 +1,58 @@
+/* ==========================================================================
+   TAQWA MOTORS - ANIMATIONS & MICRO-INTERACTIONS
+   ========================================================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatGentle {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulseGlowRed {
+  0% { box-shadow: 0 0 15px rgba(211, 47, 47, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(211, 47, 47, 0.7); }
+  100% { box-shadow: 0 0 15px rgba(211, 47, 47, 0.3); }
+}
+
+@keyframes rotateSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.glow-hover {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 25px rgba(211, 47, 47, 0.5);
+  transform: translateY(-2px);
+}
+
+.pulse-badge {
+  animation: pulseGlowRed 3s infinite;
+}
+
+.floating-element {
+  animation: floatGentle 4s ease-in-out infinite;
+}
