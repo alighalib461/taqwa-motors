@@ -78,7 +78,7 @@
   --font-serif: 'Cinzel', serif;
 }
 
-/* Base Reset */
+/* Base Reset & Overflow Guards */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -88,7 +88,10 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
-  scroll-padding-top: 90px;
+  scroll-padding-top: 80px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -96,7 +99,10 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-primary);
   line-height: 1.6;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
+  position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -108,18 +114,20 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
   color: var(--text-primary);
   letter-spacing: -0.02em;
+  word-break: break-word;
 }
 
-h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 900; }
-h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
-h3 { font-size: clamp(1.3rem, 2.2vw, 1.75rem); }
-h4 { font-size: 1.25rem; font-weight: 600; }
-h5 { font-size: 1.1rem; }
-h6 { font-size: 0.95rem; }
+h1 { font-size: clamp(2rem, 5vw, 4.2rem); font-weight: 900; }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.8rem); }
+h3 { font-size: clamp(1.2rem, 2.2vw, 1.75rem); }
+h4 { font-size: 1.2rem; font-weight: 600; }
+h5 { font-size: 1.05rem; }
+h6 { font-size: 0.92rem; }
 
 p {
   color: var(--text-secondary);
   font-size: 1rem;
+  word-break: break-word;
 }
 
 a {
@@ -139,6 +147,7 @@ button, input, select, textarea {
   font-size: 1rem;
   border: none;
   outline: none;
+  max-width: 100%;
 }
 
 button {
@@ -163,10 +172,29 @@ ul, ol {
   padding: 0 24px;
 }
 
+@media (max-width: 768px) {
+  .container, .container-fluid {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .container, .container-fluid {
+    padding: 0 12px;
+  }
+}
+
 /* Section Wrapper */
 .section {
-  padding: 90px 0;
+  padding: 80px 0;
   position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 50px 0;
+  }
 }
 
 .section-dark-surface {
@@ -176,7 +204,13 @@ ul, ol {
 .section-header {
   text-align: center;
   max-width: 780px;
-  margin: 0 auto 56px;
+  margin: 0 auto 48px;
+}
+
+@media (max-width: 768px) {
+  .section-header {
+    margin-bottom: 32px;
+  }
 }
 
 .section-tag {
@@ -188,11 +222,12 @@ ul, ol {
   background: var(--primary-red-light);
   border: 1px solid rgba(211, 47, 47, 0.3);
   color: #FF6B6B;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 16px;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+  max-width: 100%;
 }
 
 .section-tag.tag-blue {
@@ -210,7 +245,7 @@ ul, ol {
 }
 
 .section-title {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .section-title .text-gradient {
@@ -224,21 +259,27 @@ ul, ol {
 }
 
 .section-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--text-secondary);
   line-height: 1.6;
 }
 
+@media (max-width: 768px) {
+  .section-subtitle {
+    font-size: 0.95rem;
+  }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-dark);
 }
 ::-webkit-scrollbar-thumb {
   background: #1E293B;
-  border-radius: 5px;
+  border-radius: 4px;
   border: 2px solid var(--bg-dark);
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -260,3 +301,28 @@ ul, ol {
 .gap-24 { gap: 24px; }
 .gap-32 { gap: 32px; }
 .w-100 { width: 100%; }
+
+/* Responsive Visibility Utilities */
+@media (max-width: 768px) {
+  .d-none-mobile {
+    display: none !important;
+  }
+  .d-block-mobile {
+    display: block !important;
+  }
+  .d-flex-mobile {
+    display: flex !important;
+  }
+  .w-100-mobile {
+    width: 100% !important;
+  }
+  .text-center-mobile {
+    text-align: center !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .d-none-desktop {
+    display: none !important;
+  }
+}

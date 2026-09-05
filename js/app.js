@@ -450,11 +450,27 @@ function setupAppEvents() {
   const mobileToggle = document.getElementById("mobileNavToggle");
   const navMenu = document.getElementById("navMenu");
   if (mobileToggle && navMenu) {
-    mobileToggle.addEventListener("click", () => {
-      navMenu.classList.toggle("active");
+    mobileToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isActive = navMenu.classList.toggle("active");
+      mobileToggle.textContent = isActive ? "✕" : "☰";
+      mobileToggle.setAttribute("aria-expanded", isActive ? "true" : "false");
     });
+
     document.querySelectorAll(".nav-link").forEach(link => {
-      link.addEventListener("click", () => navMenu.classList.remove("active"));
+      link.addEventListener("click", () => {
+        navMenu.classList.remove("active");
+        mobileToggle.textContent = "☰";
+        mobileToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (navMenu.classList.contains("active") && !navMenu.contains(e.target) && e.target !== mobileToggle) {
+        navMenu.classList.remove("active");
+        mobileToggle.textContent = "☰";
+        mobileToggle.setAttribute("aria-expanded", "false");
+      }
     });
   }
 
