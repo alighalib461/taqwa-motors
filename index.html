@@ -96,6 +96,11 @@
           <span>WhatsApp</span>
         </a>
 
+        <a href="admin/login.html" class="btn btn-outline-red btn-sm nav-admin-btn" title="Dealership Staff & Owner Portal" style="display: inline-flex; align-items: center; gap: 5px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>Admin Portal</span>
+        </a>
+
         <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu">
           ☰
         </button>
@@ -817,6 +822,7 @@
             <li><a href="#calculator" class="footer-link">EMI Loan Calculator</a></li>
             <li><a href="#why-us" class="footer-link">Why Choose Us</a></li>
             <li><a href="#testimonials" class="footer-link">Customer Reviews</a></li>
+            <li><a href="admin/login.html" class="footer-link" style="color: #FF6B6B; font-weight: 700;">🔒 Staff / Admin Portal</a></li>
           </ul>
         </div>
 
@@ -857,8 +863,12 @@
         <div>
           © 2026 Taqwa Motors. All Rights Reserved. Rawalpindi, Pakistan.
         </div>
-        <div style="display:flex; gap:16px;">
+        <div style="display:flex; align-items:center; gap:16px; flex-wrap: wrap;">
           <span>Where Trust Drives Everything</span>
+          <a href="admin/login.html" class="btn btn-outline btn-sm" style="border-color: rgba(211,47,47,0.6); background: rgba(211,47,47,0.1); color: #FFFFFF; padding: 6px 14px; font-size: 0.82rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;" title="Authorized Dealership Staff & Admin Portal">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Admin Portal
+          </a>
         </div>
       </div>
     </div>
@@ -1013,6 +1023,10 @@
       </div>
     </div>
   </div>
+
+  <!-- Supabase JS & Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
 
   <!-- JavaScript Scripts -->
   <script src="js/data.js"></script>

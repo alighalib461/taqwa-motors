@@ -1,0 +1,17 @@
+{
+  "name": "taqwa-motors",
+  "version": "1.0.0",
+  "description": "Taqwa Motors - Premium Car Dealership & Management System",
+  "scripts": {
+    "start": "npx -y serve . -p 3000",
+    "dev": "npx -y serve . -p 3000"
+  },
+  "keywords": [
+    "dealership",
+    "cars",
+    "taqwa-motors",
+    "supabase"
+  ],
+  "author": "Taqwa Motors",
+  "license": "ISC"
+}

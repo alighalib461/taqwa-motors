@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle Details & Operations | Taqwa Motors Admin</title>
+  <link rel="icon" type="image/png" href="../assets/logo/taqwa-logo.png">
+
+  <!-- Design System & Icons -->
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <a href="index.html" class="sidebar-brand">
+        <img src="../assets/logo/taqwa-logo.png" alt="Taqwa Motors" class="sidebar-logo-img" onerror="this.style.display='none'">
+        <div class="sidebar-brand-text">
+          <span class="sidebar-brand-name">TAQWA <span class="red-accent">MOTORS</span></span>
+          <span class="sidebar-brand-badge">Dealership Portal</span>
+        </div>
+      </a>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Dealership Management</div>
+        <a href="index.html" class="sidebar-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="inventory.html" class="sidebar-link active">
+          <i data-lucide="car"></i>
+          <span>Inventory</span>
+        </a>
+        <a href="customers.html" class="sidebar-link">
+          <i data-lucide="users"></i>
+          <span>Customers</span>
+        </a>
+        <a href="#" class="sidebar-link" onclick="alert('Sales & Invoicing is directly managed within each vehicle profile and dedicated reporting.')">
+          <i data-lucide="badge-dollar-sign"></i>
+          <span>Sales</span>
+        </a>
+        <a href="#" class="sidebar-link" onclick="alert('Financial Reports will expand in upcoming milestones.')">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Reports</span>
+          <span class="badge-coming">Soon</span>
+        </a>
+
+        <div class="nav-section-title" style="margin-top: 1rem;">System</div>
+        <a href="../index.html" target="_blank" class="sidebar-link">
+          <i data-lucide="external-link"></i>
+          <span>View Public Website</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-widget">
+          <div class="user-avatar" id="sidebarUserAvatar">A</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebarUserName">Loading...</div>
+            <span class="user-role-badge" id="sidebarUserRole">Owner</span>
+          </div>
+        </div>
+        <button id="logoutBtn" class="btn-logout" style="width: 100%; justify-content: center;">
+          <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Header -->
+      <header class="admin-header">
+        <div class="header-left">
+          <button id="menuToggleBtn" class="menu-toggle-btn">
+            <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+          </button>
+          <div class="page-title-wrap">
+            <h1>Vehicle Operations & History</h1>
+            <p>Comprehensive vehicle records, costs, expenses, sales & private documents</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="header-time-pill" id="liveClock">--:-- PKT</div>
+          <a href="inventory.html" class="btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            <span>Back to Inventory</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Main Body -->
+      <div class="admin-content">
+        <!-- Vehicle Hero Header Card -->
+        <div class="content-card" style="padding: 1.5rem 2rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.35rem;">
+                <span class="stock-tag" id="detailStockTag">TM-000</span>
+                <span id="detailStatusBadge" class="status-badge available">
+                  <span class="status-dot"></span>
+                  <span>Available</span>
+                </span>
+              </div>
+              <h1 id="detailTitle" style="font-family: var(--font-heading); font-size: 1.65rem; font-weight: 800; color: #FFFFFF;">Loading Vehicle...</h1>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+              <div>
+                <div style="font-size: 0.75rem; color: var(--admin-text-muted); text-transform: uppercase; font-weight: 600;">Asking Price</div>
+                <div id="detailPrice" style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: #FFFFFF;">PKR 0</div>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <select id="quickStatusSelect" class="admin-select" style="width: auto;" onchange="handleDetailStatusChange(this.value)">
+                  <option value="available">Available</option>
+                  <option value="reserved">Reserved</option>
+                  <option value="sold">Sold</option>
+                  <option value="hidden">Hidden / Archive</option>
+                </select>
+
+                <a id="editVehicleBtn" href="#" class="btn-primary">
+                  <i data-lucide="edit" style="width: 16px; height: 16px;"></i>
+                  <span>Edit Specs</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Navigation Bar -->
+        <div class="admin-nav-tabs">
+          <button type="button" class="tab-btn active" data-tab="tabOverview">
+            <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
+            <span>Overview & Specs</span>
+          </button>
+          <button type="button" class="tab-btn" data-tab="tabPurchase">
+            <i data-lucide="receipt" style="width: 18px; height: 18px;"></i>
+            <span>Purchase Info</span>
+          </button>
+          <button type="button" class="tab-btn" data-tab="tabExpenses">
+            <i data-lucide="wrench" style="width: 18px; height: 18px;"></i>
+            <span>Expenses & Repairs</span>
+          </button>
+          <button type="button" class="tab-btn" data-tab="tabSale">
+            <i data-lucide="badge-check" style="width: 18px; height: 18px;"></i>
+            <span>Sale & Buyer</span>
+          </button>
+          <button type="button" class="tab-btn" data-tab="tabFinancial">
+            <i data-lucide="trending-up" style="width: 18px; height: 18px;"></i>
+            <span>Financial Summary</span>
+          </button>
+          <button type="button" class="tab-btn" data-tab="tabDocuments">
+            <i data-lucide="file-text" style="width: 18px; height: 18px;"></i>
+            <span>Private Documents</span>
+          </button>
+        </div>
+
+        <!-- ====================================================================
+             TAB 1: OVERVIEW & SPECS
+             ==================================================================== -->
+        <div id="tabOverview" class="tab-pane active">
+          <div class="detail-grid">
+            <!-- Left Column: Gallery & Description -->
+            <div>
+              <div class="content-card" style="padding: 1.5rem;">
+                <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Vehicle Gallery</h2>
+                <div class="gallery-main-view">
+                  <img id="galleryMainImg" src="../assets/cars/fortuner_legender.jpg" alt="Vehicle Photo">
+                </div>
+                <div id="galleryThumbsStrip" class="gallery-thumb-strip"></div>
+              </div>
+
+              <div class="content-card" style="padding: 1.5rem;">
+                <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;">Public Description</h2>
+                <p id="detailDescription" style="font-size: 0.92rem; color: var(--admin-text-secondary); line-height: 1.7; white-space: pre-line;">
+                  Loading description...
+                </p>
+              </div>
+            </div>
+
+            <!-- Right Column: Specs & Confidential Identifiers -->
+            <div>
+              <div class="content-card" style="padding: 1.5rem; border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.03);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                  <i data-lucide="shield-alert" style="width: 20px; height: 20px; color: #F87171;"></i>
+                  <h2 style="font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: #FCA5A5;">Private Identifiers (Admin Only)</h2>
+                </div>
+                <p style="font-size: 0.78rem; color: var(--admin-text-muted); margin-bottom: 1.25rem;">
+                  Protected by Row Level Security and hidden from public website visitors.
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                  <div class="spec-item" style="background: rgba(0,0,0,0.3);">
+                    <div class="spec-label">Registration Number</div>
+                    <div id="privateRegNumber" class="spec-val" style="color: #60A5FA; font-family: var(--font-mono);">-</div>
+                  </div>
+
+                  <div class="spec-item" style="background: rgba(0,0,0,0.3);">
+                    <div class="spec-label">Chassis Number / VIN</div>
+                    <div id="privateChassisNumber" class="spec-val" style="color: #FBBF24; font-family: var(--font-mono);">-</div>
+                  </div>
+
+                  <div class="spec-item" style="background: rgba(0,0,0,0.3);">
+                    <div class="spec-label">Record Added</div>
+                    <div id="privateCreatedDate" class="spec-val" style="font-size: 0.85rem; color: var(--admin-text-muted);">-</div>
+                  </div>
+
+                  <div class="spec-item" style="background: rgba(0,0,0,0.3);">
+                    <div class="spec-label">Last Updated</div>
+                    <div id="privateUpdatedDate" class="spec-val" style="font-size: 0.85rem; color: var(--admin-text-muted);">-</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="content-card" style="padding: 1.5rem;">
+                <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Specifications</h2>
+                <div class="spec-list">
+                  <div class="spec-item"><div class="spec-label">Mileage</div><div id="specMileage" class="spec-val">-</div></div>
+                  <div class="spec-item"><div class="spec-label">Fuel Type</div><div id="specFuel" class="spec-val">-</div></div>
+                  <div class="spec-item"><div class="spec-label">Transmission</div><div id="specTransmission" class="spec-val">-</div></div>
+                  <div class="spec-item"><div class="spec-label">Exterior Color</div><div id="specColor" class="spec-val">-</div></div>
+                  <div class="spec-item"><div class="spec-label">Condition</div><div id="specCondition" class="spec-val">-</div></div>
+                  <div class="spec-item"><div class="spec-label">Featured</div><div id="specFeatured" class="spec-val">-</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====================================================================
+             TAB 2: PURCHASE INFORMATION
+             ==================================================================== -->
+        <div id="tabPurchase" class="tab-pane">
+          <div class="content-card" style="padding: 1.75rem 2rem;">
+            <div id="purchaseContentArea">
+              <div style="text-align: center; padding: 2rem; color: var(--admin-text-muted);">Loading purchase records...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====================================================================
+             TAB 3: EXPENSES & REPAIRS
+             ==================================================================== -->
+        <div id="tabExpenses" class="tab-pane">
+          <div class="content-card">
+            <div class="card-header-bar">
+              <div>
+                <h2>Reconditioning & Maintenance Expenses</h2>
+                <p style="font-size: 0.8rem; color: var(--admin-text-muted);">Itemized cost breakdown for repairs, detailing, parts & registration</p>
+              </div>
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div>
+                  <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--admin-text-muted); font-weight: 700;">Total Expenses:</span>
+                  <span id="expensesTotalCounter" style="font-family: var(--font-heading); font-weight: 800; color: #FBBF24; font-size: 1.15rem; margin-left: 0.35rem;">PKR 0</span>
+                </div>
+                <button type="button" class="btn-primary btn-sm" onclick="openAddExpenseModal()">
+                  <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                  <span>Add Expense</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Empty state -->
+            <div id="expensesEmptyState" class="empty-state-box" style="display: none;">
+              <i data-lucide="wrench" class="empty-icon"></i>
+              <h3 class="empty-title">No Expenses Recorded</h3>
+              <p style="font-size: 0.85rem; margin-bottom: 1.25rem;">Record parts, mechanical maintenance, or detailing costs to compute real net profit.</p>
+              <button type="button" class="btn-primary" onclick="openAddExpenseModal()">
+                <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                <span>Add First Expense</span>
+              </button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Amount (PKR)</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="expensesTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====================================================================
+             TAB 4: SALE & BUYER
+             ==================================================================== -->
+        <div id="tabSale" class="tab-pane">
+          <div class="content-card" style="padding: 1.75rem 2rem;">
+            <div id="saleContentArea">
+              <div style="text-align: center; padding: 2rem; color: var(--admin-text-muted);">Loading sales records...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====================================================================
+             TAB 5: FINANCIAL SUMMARY & PROFIT
+             ==================================================================== -->
+        <div id="tabFinancial" class="tab-pane">
+          <div class="content-card" style="padding: 1.75rem 2rem;">
+            <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+              Dealership Financial Summary
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--admin-text-muted); margin-bottom: 1.75rem;">
+              Realized margin calculated automatically as: <code>Profit = Sale Price - (Purchase Price + Expenses)</code>
+            </p>
+
+            <!-- Profit Alert Banner -->
+            <div id="finProfitStatusBanner" style="display: none; margin-bottom: 1.75rem;"></div>
+
+            <!-- Metrics Grid -->
+            <div class="financial-summary-grid">
+              <div class="fin-card">
+                <div class="fin-card-label">Purchase Price</div>
+                <div class="fin-card-val" id="finPurchaseVal" style="color: #60A5FA;">PKR 0</div>
+              </div>
+
+              <div class="fin-card">
+                <div class="fin-card-label">Total Expenses</div>
+                <div class="fin-card-val" id="finExpensesVal" style="color: #FBBF24;">PKR 0</div>
+              </div>
+
+              <div class="fin-card">
+                <div class="fin-card-label">Total Invested Cost</div>
+                <div class="fin-card-val" id="finTotalCostVal" style="color: #E2E8F0;">PKR 0</div>
+              </div>
+
+              <div class="fin-card">
+                <div class="fin-card-label">Sale Price</div>
+                <div class="fin-card-val" id="finSaleVal" style="color: #A78BFA;">Not Sold</div>
+              </div>
+
+              <div class="fin-card" id="finCardProfit">
+                <div class="fin-card-label">Net Realized Profit</div>
+                <div class="fin-card-val" id="finProfitVal">Unrealized</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====================================================================
+             TAB 6: PRIVATE DOCUMENTS (STORAGE)
+             ==================================================================== -->
+        <div id="tabDocuments" class="tab-pane">
+          <div class="content-card" style="padding: 1.75rem 2rem;">
+            <div class="card-header-bar" style="padding: 0 0 1.25rem 0; border-bottom: 1px solid var(--admin-border);">
+              <div>
+                <h2>Confidential Document Vault</h2>
+                <p style="font-size: 0.8rem; color: var(--admin-text-muted);">
+                  Encrypted storage for purchase receipts, Japanese auction sheets, registration books and sale agreements
+                </p>
+              </div>
+            </div>
+
+            <!-- Upload Area -->
+            <div style="margin: 1.5rem 0; padding: 1.25rem; background: rgba(0,0,0,0.25); border-radius: var(--radius-md); border: 1px solid var(--admin-border);">
+              <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
+                <div style="flex: 1; min-width: 200px;">
+                  <label class="form-label" style="margin-bottom: 0.35rem;">Document Category</label>
+                  <select id="docTypeSelect" class="admin-select">
+                    <option value="inspection">Inspection / Japanese Auction Sheet</option>
+                    <option value="purchase_document">Purchase Document / Seller Receipt</option>
+                    <option value="registration">Registration Book / File</option>
+                    <option value="sale_document">Sale Agreement / Buyer Receipt</option>
+                    <option value="other">Other Document</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="docDropzone" class="dropzone-box" style="padding: 1.75rem 1rem;">
+                <i data-lucide="file-up" class="dropzone-icon" style="width: 36px; height: 36px;"></i>
+                <div class="dropzone-text">Click to upload document file (PDF, JPG, PNG)</div>
+                <div class="dropzone-sub">Max file size: 20MB • Automatically encrypted in private vault</div>
+                <input type="file" id="docFileInput" accept="application/pdf,image/jpeg,image/png,image/webp" style="display: none;">
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="documentsEmptyState" class="empty-state-box" style="display: none; padding: 2rem;">
+              <i data-lucide="shield-check" class="empty-icon"></i>
+              <h3 class="empty-title">No Private Documents Attached</h3>
+              <p style="font-size: 0.85rem;">Upload auction sheets or registration papers above.</p>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Document Name</th>
+                    <th>Type</th>
+                    <th>Upload Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="documentsListTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ====================================================================
+       MODALS
+       ==================================================================== -->
+
+  <!-- 1. Purchase Modal -->
+  <div class="modal-backdrop" id="purchaseModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="receipt" style="color: var(--admin-primary);"></i>
+          <span>Record Vehicle Purchase</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closePurchaseModal()">✕</button>
+      </div>
+      <form id="purchaseForm" onsubmit="handlePurchaseFormSubmit(event)">
+        <div class="modal-body">
+          <div class="form-grid-2" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label for="purchaseSellerName" class="form-label">Seller / Auction Name <span class="required-star">*</span></label>
+              <input type="text" id="purchaseSellerName" class="admin-input" placeholder="e.g. Tariq Mehmood / USS Tokyo" required>
+            </div>
+
+            <div class="form-group">
+              <label for="purchaseSellerPhone" class="form-label">Seller Contact Number</label>
+              <input type="tel" id="purchaseSellerPhone" class="admin-input" placeholder="e.g. 0333-1234567">
+            </div>
+          </div>
+
+          <div class="form-grid-2" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label for="purchasePrice" class="form-label">Purchase Cost (PKR) <span class="required-star">*</span></label>
+              <input type="number" id="purchasePrice" class="admin-input" placeholder="e.g. 15500000" min="0" required>
+            </div>
+
+            <div class="form-group">
+              <label for="purchaseDate" class="form-label">Purchase Date <span class="required-star">*</span></label>
+              <input type="date" id="purchaseDate" class="admin-input" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="purchasePaymentMethod" class="form-label">Payment Method</label>
+            <select id="purchasePaymentMethod" class="admin-select">
+              <option value="Bank Transfer">Bank Transfer / Pay Order</option>
+              <option value="Cash">Cash</option>
+              <option value="Cheque">Cross Cheque</option>
+              <option value="Letter of Credit">Letter of Credit (LC Import)</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="purchaseNotes" class="form-label">Purchase Notes & Conditions</label>
+            <textarea id="purchaseNotes" class="admin-textarea" placeholder="Remarks, token money paid, transfer conditions..." style="min-height: 80px;"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closePurchaseModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Save Purchase Info</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Expense Modal -->
+  <div class="modal-backdrop" id="expenseModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="wrench" style="color: var(--admin-primary);"></i>
+          <span>Add Reconditioning Expense</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeExpenseModal()">✕</button>
+      </div>
+      <form id="expenseForm" onsubmit="handleExpenseFormSubmit(event)">
+        <div class="modal-body">
+          <div class="form-grid-2" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label for="expenseType" class="form-label">Expense Category <span class="required-star">*</span></label>
+              <select id="expenseType" class="admin-select" required>
+                <option value="repair">Mechanical Repair</option>
+                <option value="maintenance">Routine Maintenance / Oil & Filters</option>
+                <option value="parts">Spare Parts & Accessories</option>
+                <option value="detailing">Detailing, Polish & Ceramic Coat</option>
+                <option value="transportation">Car Carrier / Transportation</option>
+                <option value="registration">Registration / Biometric Fees</option>
+                <option value="other">Other Expense</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="expenseAmount" class="form-label">Amount (PKR) <span class="required-star">*</span></label>
+              <input type="number" id="expenseAmount" class="admin-input" placeholder="e.g. 45000" min="0" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="expenseDate" class="form-label">Expense Date <span class="required-star">*</span></label>
+            <input type="date" id="expenseDate" class="admin-input" required>
+          </div>
+
+          <div class="form-group">
+            <label for="expenseDescription" class="form-label">Description & Workshop Remarks</label>
+            <textarea id="expenseDescription" class="admin-textarea" placeholder="e.g. Front bumper paint touchup & interior leather detailing..." style="min-height: 80px;"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeExpenseModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Add Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Record Sale Modal -->
+  <div class="modal-backdrop" id="saleModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="badge-check" style="color: var(--admin-emerald);"></i>
+          <span>Record Sale & Mark As Sold</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeSaleModal()">✕</button>
+      </div>
+      <form id="saleForm" onsubmit="handleSaleFormSubmit(event)">
+        <div class="modal-body">
+          <!-- Buyer Selection -->
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="saleCustomerSelect" class="form-label">Select Registered Buyer <span class="required-star">*</span></label>
+            <select id="saleCustomerSelect" class="admin-select"></select>
+          </div>
+
+          <!-- Inline Create New Buyer toggle -->
+          <div style="margin-bottom: 1.25rem; padding: 0.85rem 1rem; background: rgba(255,255,255,0.02); border: 1px dashed var(--admin-border); border-radius: var(--radius-sm);">
+            <label class="checkbox-wrap" style="margin-bottom: 0.5rem;">
+              <input type="checkbox" id="checkCreateNewCustomer" onchange="document.getElementById('newCustomerInlineFields').style.display = this.checked ? 'grid' : 'none'">
+              <span class="form-label" style="margin: 0; color: #60A5FA;">+ Or Register New Buyer Right Now</span>
+            </label>
+
+            <div id="newCustomerInlineFields" class="form-grid-3" style="display: none; margin-top: 0.75rem;">
+              <div class="form-group">
+                <input type="text" id="newCustName" class="admin-input" placeholder="Buyer Full Name">
+              </div>
+              <div class="form-group">
+                <input type="tel" id="newCustPhone" class="admin-input" placeholder="Phone Number">
+              </div>
+              <div class="form-group">
+                <input type="text" id="newCustCnic" class="admin-input" placeholder="CNIC Number">
+              </div>
+            </div>
+          </div>
+
+          <!-- Sale Numbers -->
+          <div class="form-grid-3" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label for="salePriceInput" class="form-label">Agreed Sale Price (PKR) <span class="required-star">*</span></label>
+              <input type="number" id="salePriceInput" class="admin-input" placeholder="e.g. 18500000" min="0" required>
+            </div>
+
+            <div class="form-group">
+              <label for="saleAmountReceived" class="form-label">Amount Received (PKR) <span class="required-star">*</span></label>
+              <input type="number" id="saleAmountReceived" class="admin-input" placeholder="e.g. 18500000" min="0" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Remaining Balance</label>
+              <input type="text" id="saleRemainingDisplay" class="admin-input" readonly style="background: rgba(0,0,0,0.3); color: #34D399; font-weight: 700;">
+            </div>
+          </div>
+
+          <div class="form-grid-2" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label for="saleDateInput" class="form-label">Sale Date <span class="required-star">*</span></label>
+              <input type="date" id="saleDateInput" class="admin-input" required>
+            </div>
+
+            <div class="form-group">
+              <label for="salePaymentMethod" class="form-label">Payment Method</label>
+              <select id="salePaymentMethod" class="admin-select">
+                <option value="Pay Order / Bank Transfer">Pay Order / Bank Transfer</option>
+                <option value="Cash">Cash</option>
+                <option value="Cheque">Cross Cheque</option>
+                <option value="Installments / Token">Token Advance + Remaining</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="saleNotes" class="form-label">Transfer Remarks & Terms</label>
+            <textarea id="saleNotes" class="admin-textarea" placeholder="Biometric transfer date, delivery remarks, warranty notes..." style="min-height: 70px;"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeSaleModal()">Cancel</button>
+          <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">Complete Sale</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/supabase-client.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-vehicle-detail.js"></script>
+</body>
+</html>

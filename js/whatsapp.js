@@ -30,7 +30,7 @@ function inquireCarWhatsApp(carId) {
 
 I am interested in this vehicle listed on your website:
 🚗 *${car.year} ${car.make} ${car.model} ${car.variant}*
-📋 Ref Code: *${car.id}*
+📋 Stock Ref: *${car.stockNumber || car.id}*
 💰 Listed Price: *${car.priceFormatted}*
 📍 Registration: *${car.registrationCity}*
 🛣️ Mileage: *${car.mileageFormatted}*

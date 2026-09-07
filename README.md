@@ -15,6 +15,8 @@ A modern, trustworthy, and high-converting car dealership website for **Taqwa Mo
 - **Hero Quick Search Bar**: Instant jump to filtered inventory by make, body type, and budget.
 - **Pakistani Certified Inventory Hub**: Multi-attribute filtering (Make, Body Type, Price Range Slider in PKR Lacs/Crores, Model Year, Fuel, Transmission, Registration City).
 - **Vehicle Details Modal**: High-res multi-angle photo gallery, condition inspection scorecards, comprehensive technical specifications, and safety/comfort feature lists.
+- **Dealership Management Portal (`/admin`)**: Complete secured management dashboard with Supabase Auth, live vehicle CRUD, photo uploads, customer management, and status tracking (Available / Reserved / Sold).
+- **Live Supabase Dynamic Sync**: Public inventory and vehicle images seamlessly sync in real-time from Supabase PostgreSQL database.
 - **WhatsApp Direct Lead Generation (`0333-5406173`)**: Contextual pre-filled messages on every car card, details modal, and contact form.
 - **Interactive Car Financing & EMI Loan Calculator**: Real-time monthly installment estimates with one-click export to WhatsApp.
 - **Side-by-Side Comparison Tool**: Compare up to 3 vehicles simultaneously.

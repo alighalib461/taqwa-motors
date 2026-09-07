@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal Login | Taqwa Motors</title>
+  <link rel="icon" type="image/png" href="../assets/logo/taqwa-logo.png">
+
+  <!-- Font & Icons -->
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="login-page-body">
+
+  <div class="login-card">
+    <div class="login-brand-header">
+      <img src="../assets/logo/taqwa-logo.png" alt="Taqwa Motors Logo" class="login-logo" onerror="this.style.display='none'">
+      <h1 class="login-title">TAQWA <span style="color: var(--admin-primary);">MOTORS</span></h1>
+      <p class="login-sub">Dealership Management System</p>
+    </div>
+
+    <!-- Alert Message Area -->
+    <div id="loginAlert" class="alert-banner" style="display: none;"></div>
+
+    <!-- Login Form -->
+    <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+      <div class="form-group" style="margin-bottom: 1.25rem;">
+        <label for="loginEmail" class="form-label">Email Address</label>
+        <input 
+          type="email" 
+          id="loginEmail" 
+          class="admin-input" 
+          placeholder="admin@taqwamotors.pk" 
+          required
+          autocomplete="email"
+        >
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+          <label for="loginPassword" class="form-label">Password</label>
+          <a href="#" id="forgotPasswordLink" style="font-size: 0.78rem; color: var(--admin-primary); text-decoration: none;" onclick="toggleForgotPassword(event)">Forgot Password?</a>
+        </div>
+        <input 
+          type="password" 
+          id="loginPassword" 
+          class="admin-input" 
+          placeholder="••••••••••••" 
+          required
+          autocomplete="current-password"
+        >
+      </div>
+
+      <button type="submit" id="loginSubmitBtn" class="btn-primary" style="width: 100%; padding: 0.85rem;">
+        <i data-lucide="lock" style="width: 18px; height: 18px;"></i>
+        <span>Sign In to Admin Portal</span>
+      </button>
+    </form>
+
+    <!-- Forgot Password Sub-View -->
+    <div id="forgotPasswordSection" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-border);">
+      <h3 style="font-size: 1rem; font-weight: 700; color: #FFFFFF; margin-bottom: 0.5rem;">Reset Your Password</h3>
+      <p style="font-size: 0.8rem; color: var(--admin-text-muted); margin-bottom: 1rem;">Enter your verified email to receive a password reset link.</p>
+      
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <input type="email" id="resetEmail" class="admin-input" placeholder="Enter your email address">
+      </div>
+      
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn-primary" style="flex: 1;" onclick="handlePasswordReset()">Send Reset Link</button>
+        <button type="button" class="btn-secondary" onclick="toggleForgotPassword(event)">Cancel</button>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem; border-top: 1px solid var(--admin-border); padding-top: 1.25rem;">
+      <a href="../index.html" style="font-size: 0.82rem; color: var(--admin-text-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 0.35rem;">
+        <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i>
+        <span>Return to Public Website</span>
+      </a>
+    </div>
+  </div>
+
+  <script src="../js/supabase-client.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // Check if already authenticated
+    document.addEventListener('DOMContentLoaded', async () => {
+      const supabase = window.getSupabaseClient();
+      if (supabase) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          window.location.href = 'index.html';
+        }
+      }
+    });
+
+    function showAlert(message, type = 'danger') {
+      const alertEl = document.getElementById('loginAlert');
+      alertEl.className = `alert-banner alert-${type}`;
+      alertEl.innerHTML = `<i data-lucide="${type === 'danger' ? 'alert-circle' : 'check-circle'}" style="width: 18px; height: 18px;"></i> <span>${message}</span>`;
+      alertEl.style.display = 'flex';
+      lucide.createIcons();
+    }
+
+    function toggleForgotPassword(e) {
+      if (e) e.preventDefault();
+      const section = document.getElementById('forgotPasswordSection');
+      section.style.display = section.style.display === 'none' ? 'block' : 'none';
+      if (section.style.display === 'block') {
+        const loginEmail = document.getElementById('loginEmail').value;
+        if (loginEmail) document.getElementById('resetEmail').value = loginEmail;
+      }
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginSubmitBtn');
+
+      if (!email || !password) {
+        showAlert('Please enter both email and password.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>Signing in...</span>`;
+
+      try {
+        const supabase = window.getSupabaseClient();
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          showAlert(error.message || 'Invalid email or password.');
+          btn.disabled = false;
+          btn.innerHTML = `<i data-lucide="lock" style="width: 18px; height: 18px;"></i> <span>Sign In to Admin Portal</span>`;
+          lucide.createIcons();
+          return;
+        }
+
+        showAlert('Login successful! Redirecting to dashboard...', 'success');
+        
+        // Parse return URL if present
+        const urlParams = new URLSearchParams(window.location.search);
+        const returnUrl = urlParams.get('return') || 'index.html';
+        
+        setTimeout(() => {
+          window.location.href = returnUrl;
+        }, 600);
+
+      } catch (err) {
+        showAlert('An unexpected error occurred. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="lock" style="width: 18px; height: 18px;"></i> <span>Sign In to Admin Portal</span>`;
+        lucide.createIcons();
+      }
+    }
+
+    async function handlePasswordReset() {
+      const email = document.getElementById('resetEmail').value.trim();
+      if (!email) {
+        showAlert('Please enter your email address for password reset.');
+        return;
+      }
+
+      try {
+        const supabase = window.getSupabaseClient();
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/admin/login.html'
+        });
+
+        if (error) {
+          showAlert(error.message);
+        } else {
+          showAlert('Password reset link sent to your email. Check your inbox.', 'success');
+          toggleForgotPassword();
+        }
+      } catch (err) {
+        showAlert('Error sending reset link.');
+      }
+    }
+  </script>
+</body>
+</html>

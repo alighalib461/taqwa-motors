@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Profile & Purchase History | Taqwa Motors Admin</title>
+  <link rel="icon" type="image/png" href="../assets/logo/taqwa-logo.png">
+
+  <!-- Design System & Icons -->
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <a href="index.html" class="sidebar-brand">
+        <img src="../assets/logo/taqwa-logo.png" alt="Taqwa Motors" class="sidebar-logo-img" onerror="this.style.display='none'">
+        <div class="sidebar-brand-text">
+          <span class="sidebar-brand-name">TAQWA <span class="red-accent">MOTORS</span></span>
+          <span class="sidebar-brand-badge">Dealership Portal</span>
+        </div>
+      </a>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Dealership Management</div>
+        <a href="index.html" class="sidebar-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="inventory.html" class="sidebar-link">
+          <i data-lucide="car"></i>
+          <span>Inventory</span>
+        </a>
+        <a href="customers.html" class="sidebar-link active">
+          <i data-lucide="users"></i>
+          <span>Customers</span>
+        </a>
+        <a href="#" class="sidebar-link" onclick="alert('Sales & Invoicing is accessible directly from vehicle records and dedicated reporting.')">
+          <i data-lucide="badge-dollar-sign"></i>
+          <span>Sales</span>
+        </a>
+        <a href="#" class="sidebar-link" onclick="alert('Financial Reports will expand in upcoming milestones.')">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Reports</span>
+          <span class="badge-coming">Soon</span>
+        </a>
+
+        <div class="nav-section-title" style="margin-top: 1rem;">System</div>
+        <a href="../index.html" target="_blank" class="sidebar-link">
+          <i data-lucide="external-link"></i>
+          <span>View Public Website</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-widget">
+          <div class="user-avatar" id="sidebarUserAvatar">A</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebarUserName">Loading...</div>
+            <span class="user-role-badge" id="sidebarUserRole">Owner</span>
+          </div>
+        </div>
+        <button id="logoutBtn" class="btn-logout" style="width: 100%; justify-content: center;">
+          <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Header -->
+      <header class="admin-header">
+        <div class="header-left">
+          <button id="menuToggleBtn" class="menu-toggle-btn">
+            <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+          </button>
+          <div class="page-title-wrap">
+            <h1>Customer Profile</h1>
+            <p>Confidential buyer profile and full vehicle transaction history</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="header-time-pill" id="liveClock">--:-- PKT</div>
+          <a href="customers.html" class="btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            <span>Back to Directory</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <div class="admin-content">
+        <!-- Customer Profile Summary Card -->
+        <div class="content-card" style="padding: 1.75rem 2rem; margin-bottom: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <span class="stock-tag" style="background: rgba(37,99,235,0.15); color: #60A5FA;">Registered Buyer</span>
+              <h1 id="custDetailName" style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: #FFFFFF; margin-top: 0.35rem;">
+                Loading...
+              </h1>
+              <p style="font-size: 0.85rem; color: var(--admin-text-muted);">Member since <span id="custDetailJoined">-</span></p>
+            </div>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--admin-border); margin: 1.5rem 0;">
+
+          <!-- Info Grid -->
+          <div class="form-grid-3">
+            <div class="spec-item">
+              <div class="spec-label">Phone Number</div>
+              <div id="custDetailPhone" class="spec-val" style="color: #60A5FA;">-</div>
+            </div>
+
+            <div class="spec-item">
+              <div class="spec-label">CNIC</div>
+              <div id="custDetailCnic" class="spec-val" style="font-family: var(--font-mono);">-</div>
+            </div>
+
+            <div class="spec-item">
+              <div class="spec-label">Email Address</div>
+              <div id="custDetailEmail" class="spec-val">-</div>
+            </div>
+
+            <div class="spec-item" style="grid-column: span 3;">
+              <div class="spec-label">Address / Location</div>
+              <div id="custDetailAddress" class="spec-val">-</div>
+            </div>
+
+            <div class="spec-item" style="grid-column: span 3; background: rgba(0,0,0,0.2);">
+              <div class="spec-label">Private Dealership Notes</div>
+              <div id="custDetailNotes" class="spec-val" style="font-weight: 400; font-size: 0.88rem; color: var(--admin-text-secondary); line-height: 1.6;">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Purchase / Sales History Card -->
+        <div class="content-card">
+          <div class="card-header-bar">
+            <div>
+              <h2>Purchased Vehicles History</h2>
+              <p style="font-size: 0.8rem; color: var(--admin-text-muted);">All vehicles sold to this customer</p>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div id="custNoPurchasesState" class="empty-state-box" style="display: none;">
+            <i data-lucide="shopping-bag" class="empty-icon"></i>
+            <h3 class="empty-title">No Vehicles Purchased Yet</h3>
+            <p style="font-size: 0.85rem;">This customer has not completed any vehicle purchases yet.</p>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Vehicle</th>
+                  <th>Sale Date</th>
+                  <th>Sale Price</th>
+                  <th>Amount Received</th>
+                  <th>Remaining Balance</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="custPurchasedVehiclesList">
+                <tr>
+                  <td colspan="6" style="text-align: center; color: var(--admin-text-muted); padding: 2.5rem;">
+                    Loading purchase history...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/supabase-client.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-customers.js"></script>
+</body>
+</html>

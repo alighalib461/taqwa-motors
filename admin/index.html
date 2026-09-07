@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dealership Dashboard | Taqwa Motors Admin</title>
+  <link rel="icon" type="image/png" href="../assets/logo/taqwa-logo.png">
+
+  <!-- Design System & Icons -->
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- ========================================================================
+         SIDEBAR NAVIGATION
+         ======================================================================== -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <a href="index.html" class="sidebar-brand">
+        <img src="../assets/logo/taqwa-logo.png" alt="Taqwa Motors" class="sidebar-logo-img" onerror="this.style.display='none'">
+        <div class="sidebar-brand-text">
+          <span class="sidebar-brand-name">TAQWA <span class="red-accent">MOTORS</span></span>
+          <span class="sidebar-brand-badge">Dealership Portal</span>
+        </div>
+      </a>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Dealership Management</div>
+        <a href="index.html" class="sidebar-link active">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="inventory.html" class="sidebar-link">
+          <i data-lucide="car"></i>
+          <span>Inventory</span>
+        </a>
+        <a href="customers.html" class="sidebar-link">
+          <i data-lucide="users"></i>
+          <span>Customers</span>
+        </a>
+        <a href="#" class="sidebar-link" onclick="alert('Sales & Invoicing is directly accessible inside vehicle operations & customer records.')">
+          <i data-lucide="badge-dollar-sign"></i>
+          <span>Sales</span>
+        </a>
+        <a href="#" class="sidebar-link" onclick="alert('Reports & Analytics is scheduled for Phase 4B.')">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Reports</span>
+          <span class="badge-coming">Soon</span>
+        </a>
+
+        <div class="nav-section-title" style="margin-top: 1rem;">System</div>
+        <a href="../index.html" target="_blank" class="sidebar-link">
+          <i data-lucide="external-link"></i>
+          <span>View Public Website</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-widget">
+          <div class="user-avatar" id="sidebarUserAvatar">A</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebarUserName">Loading...</div>
+            <span class="user-role-badge" id="sidebarUserRole">Owner</span>
+          </div>
+        </div>
+        <button id="logoutBtn" class="btn-logout" style="width: 100%; justify-content: center;">
+          <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========================================================================
+         MAIN CONTENT AREA
+         ======================================================================== -->
+    <main class="admin-main">
+      <!-- Top Header -->
+      <header class="admin-header">
+        <div class="header-left">
+          <button id="menuToggleBtn" class="menu-toggle-btn">
+            <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+          </button>
+          <div class="page-title-wrap">
+            <h1>Dealership Dashboard</h1>
+            <p>Real-time vehicle inventory & showroom overview</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="header-time-pill" id="liveClock">--:-- PKT</div>
+          <a href="inventory-add.html" class="btn-primary">
+            <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i>
+            <span>Add Vehicle</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Dashboard Content Body -->
+      <div class="admin-content">
+        <!-- KPI Metrics Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-total">
+            <div class="kpi-info">
+              <p>Total Vehicles</p>
+              <div class="kpi-number" id="kpiTotal">-</div>
+            </div>
+            <div class="kpi-icon-wrap">
+              <i data-lucide="car" style="width: 24px; height: 24px;"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-available">
+            <div class="kpi-info">
+              <p>Available</p>
+              <div class="kpi-number" id="kpiAvailable">-</div>
+            </div>
+            <div class="kpi-icon-wrap">
+              <i data-lucide="check-circle-2" style="width: 24px; height: 24px;"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-reserved">
+            <div class="kpi-info">
+              <p>Reserved</p>
+              <div class="kpi-number" id="kpiReserved">-</div>
+            </div>
+            <div class="kpi-icon-wrap">
+              <i data-lucide="clock" style="width: 24px; height: 24px;"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-sold">
+            <div class="kpi-info">
+              <p>Sold</p>
+              <div class="kpi-number" id="kpiSold">-</div>
+            </div>
+            <div class="kpi-icon-wrap">
+              <i data-lucide="tag" style="width: 24px; height: 24px;"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Vehicles Card -->
+        <div class="content-card">
+          <div class="card-header-bar">
+            <div>
+              <h2>Recent Inventory Additions</h2>
+              <p style="font-size: 0.8rem; color: var(--admin-text-muted);">Latest cars added to your showroom</p>
+            </div>
+            <a href="inventory.html" class="btn-secondary btn-sm">
+              <span>View All Inventory</span>
+              <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+            </a>
+          </div>
+
+          <!-- Empty State (Hidden if cars exist) -->
+          <div id="recentVehiclesEmpty" class="empty-state-box" style="display: none;">
+            <i data-lucide="car-front" class="empty-icon"></i>
+            <h3 class="empty-title">No Vehicles In Inventory Yet</h3>
+            <p style="font-size: 0.88rem; max-width: 420px; margin: 0 auto 1.5rem;">Start expanding your dealership catalogue by adding your first certified Japanese or imported vehicle.</p>
+            <a href="inventory-add.html" class="btn-primary">
+              <i data-lucide="plus" style="width: 18px; height: 18px;"></i>
+              <span>Add First Vehicle</span>
+            </a>
+          </div>
+
+          <!-- Table of recent cars -->
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Vehicle</th>
+                  <th>Stock No.</th>
+                  <th>Mileage</th>
+                  <th>Asking Price</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recentVehiclesTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; color: var(--admin-text-muted); padding: 2.5rem;">
+                    Loading recent inventory...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/supabase-client.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

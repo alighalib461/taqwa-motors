@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customers Directory | Taqwa Motors Admin</title>
+  <link rel="icon" type="image/png" href="../assets/logo/taqwa-logo.png">
+
+  <!-- Design System & Icons -->
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <a href="index.html" class="sidebar-brand">
+        <img src="../assets/logo/taqwa-logo.png" alt="Taqwa Motors" class="sidebar-logo-img" onerror="this.style.display='none'">
+        <div class="sidebar-brand-text">
+          <span class="sidebar-brand-name">TAQWA <span class="red-accent">MOTORS</span></span>
+          <span class="sidebar-brand-badge">Dealership Portal</span>
+        </div>
+      </a>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Dealership Management</div>
+        <a href="index.html" class="sidebar-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="inventory.html" class="sidebar-link">
+          <i data-lucide="car"></i>
+          <span>Inventory</span>
+        </a>
+        <a href="customers.html" class="sidebar-link active">
+          <i data-lucide="users"></i>
+          <span>Customers</span>
+        </a>
+        <a href="#" class="sidebar-link" onclick="alert('Sales & Invoicing is accessible directly from vehicle records and dedicated reporting.')">
+          <i data-lucide="badge-dollar-sign"></i>
+          <span>Sales</span>
+        </a>
+        <a href="#" class="sidebar-link" onclick="alert('Financial Reports will expand in upcoming milestones.')">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Reports</span>
+          <span class="badge-coming">Soon</span>
+        </a>
+
+        <div class="nav-section-title" style="margin-top: 1rem;">System</div>
+        <a href="../index.html" target="_blank" class="sidebar-link">
+          <i data-lucide="external-link"></i>
+          <span>View Public Website</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-widget">
+          <div class="user-avatar" id="sidebarUserAvatar">A</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebarUserName">Loading...</div>
+            <span class="user-role-badge" id="sidebarUserRole">Owner</span>
+          </div>
+        </div>
+        <button id="logoutBtn" class="btn-logout" style="width: 100%; justify-content: center;">
+          <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Header -->
+      <header class="admin-header">
+        <div class="header-left">
+          <button id="menuToggleBtn" class="menu-toggle-btn">
+            <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+          </button>
+          <div class="page-title-wrap">
+            <h1>Customer Directory</h1>
+            <p>Confidential buyer registry and purchase histories</p>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="header-time-pill" id="liveClock">--:-- PKT</div>
+          <button type="button" class="btn-primary" onclick="openAddCustomerModal()">
+            <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i>
+            <span>Add Customer</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <div class="admin-content">
+        <div class="content-card">
+          <!-- Toolbar -->
+          <div class="filter-toolbar">
+            <div class="search-main-row">
+              <div class="search-input-wrap">
+                <i data-lucide="search"></i>
+                <input 
+                  type="text" 
+                  id="customerSearchInput" 
+                  class="admin-input-search" 
+                  placeholder="Search customers by Name, Phone number, or CNIC..."
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Header summary bar -->
+          <div class="card-header-bar" style="background: rgba(255,255,255,0.01);">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <h2>Registered Buyers</h2>
+              <span class="stock-tag" id="customerCountBadge">0 Customers</span>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div id="customersEmptyState" class="empty-state-box" style="display: none;">
+            <i data-lucide="users" class="empty-icon"></i>
+            <h3 class="empty-title">No Customers Found</h3>
+            <p style="font-size: 0.88rem; max-width: 420px; margin: 0 auto 1.5rem;">Register your first client or buyer to manage vehicle sales and invoicing records.</p>
+            <button type="button" class="btn-primary" onclick="openAddCustomerModal()">
+              <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i>
+              <span>Register First Customer</span>
+            </button>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Phone Number</th>
+                  <th>CNIC</th>
+                  <th>Address</th>
+                  <th>Registered</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="customersTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; color: var(--admin-text-muted); padding: 3rem;">
+                    Loading customer directory...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add/Edit Customer Modal -->
+  <div class="modal-backdrop" id="customerModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="user-check" style="color: var(--admin-primary);"></i>
+          <span id="customerModalTitle">Add New Customer</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeCustomerModal()">✕</button>
+      </div>
+      <form id="customerForm" onsubmit="handleCustomerFormSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="customerName" class="form-label">Full Name <span class="required-star">*</span></label>
+            <input type="text" id="customerName" class="admin-input" placeholder="e.g. Muhammad Usman" required>
+          </div>
+
+          <div class="form-grid-2" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label for="customerPhone" class="form-label">Phone Number</label>
+              <input type="tel" id="customerPhone" class="admin-input" placeholder="e.g. 0300-1234567">
+            </div>
+
+            <div class="form-group">
+              <label for="customerCnic" class="form-label">CNIC Number</label>
+              <input type="text" id="customerCnic" class="admin-input" placeholder="e.g. 37405-1234567-1">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="customerEmail" class="form-label">Email Address</label>
+            <input type="email" id="customerEmail" class="admin-input" placeholder="e.g. buyer@example.com">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="customerAddress" class="form-label">City / Address</label>
+            <input type="text" id="customerAddress" class="admin-input" placeholder="e.g. Bahria Town Phase 7, Rawalpindi">
+          </div>
+
+          <div class="form-group">
+            <label for="customerNotes" class="form-label">Private Dealership Notes</label>
+            <textarea id="customerNotes" class="admin-textarea" placeholder="Internal remarks, customer preferences, referral info..." style="min-height: 80px;"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeCustomerModal()">Cancel</button>
+          <button type="submit" class="btn-primary">Save Customer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/supabase-client.js"></script>
+  <script src="js/admin-auth.js"></script>
+  <script src="js/admin-customers.js"></script>
+</body>
+</html>
