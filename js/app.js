@@ -621,30 +621,53 @@ function setupAppEvents() {
     triggerScrollReveal();
   });
 
-  // Mobile Menu Toggle
+  // Mobile Menu Toggle with Backdrop
   const mobileToggle = document.getElementById("mobileNavToggle");
   const navMenu = document.getElementById("navMenu");
   if (mobileToggle && navMenu) {
+    let navBackdrop = document.getElementById("mobileNavBackdrop");
+    if (!navBackdrop) {
+      navBackdrop = document.createElement("div");
+      navBackdrop.id = "mobileNavBackdrop";
+      navBackdrop.className = "mobile-nav-backdrop";
+      document.body.appendChild(navBackdrop);
+    }
+
+    const setMobileMenuState = (open) => {
+      if (open) {
+        navMenu.classList.add("active");
+        navBackdrop.classList.add("active");
+        mobileToggle.textContent = "✕";
+        mobileToggle.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+      } else {
+        navMenu.classList.remove("active");
+        navBackdrop.classList.remove("active");
+        mobileToggle.textContent = "☰";
+        mobileToggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      }
+    };
+
     mobileToggle.addEventListener("click", (e) => {
       e.stopPropagation();
-      const isActive = navMenu.classList.toggle("active");
-      mobileToggle.textContent = isActive ? "✕" : "☰";
-      mobileToggle.setAttribute("aria-expanded", isActive ? "true" : "false");
+      const willOpen = !navMenu.classList.contains("active");
+      setMobileMenuState(willOpen);
+    });
+
+    navBackdrop.addEventListener("click", () => {
+      setMobileMenuState(false);
     });
 
     document.querySelectorAll(".nav-link").forEach(link => {
       link.addEventListener("click", () => {
-        navMenu.classList.remove("active");
-        mobileToggle.textContent = "☰";
-        mobileToggle.setAttribute("aria-expanded", "false");
+        setMobileMenuState(false);
       });
     });
 
-    document.addEventListener("click", (e) => {
-      if (navMenu.classList.contains("active") && !navMenu.contains(e.target) && e.target !== mobileToggle) {
-        navMenu.classList.remove("active");
-        mobileToggle.textContent = "☰";
-        mobileToggle.setAttribute("aria-expanded", "false");
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 1100 && navMenu.classList.contains("active")) {
+        setMobileMenuState(false);
       }
     });
   }

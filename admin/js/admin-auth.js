@@ -82,18 +82,56 @@ function initLayoutControls() {
     setInterval(updateTime, 1000);
   }
 
-  // Mobile sidebar toggle
+  // Mobile sidebar toggle & backdrop handling
   const toggleBtn = document.getElementById('menuToggleBtn');
   const sidebar = document.getElementById('adminSidebar');
-  if (toggleBtn && sidebar) {
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
+  
+  if (sidebar) {
+    let backdrop = document.getElementById('adminSidebarBackdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.id = 'adminSidebarBackdrop';
+      backdrop.className = 'admin-sidebar-backdrop';
+      document.body.appendChild(backdrop);
+    }
+
+    const openSidebar = () => {
+      sidebar.classList.add('open');
+      if (backdrop) backdrop.classList.add('active');
+      if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
+    };
+
+    const closeSidebar = () => {
+      sidebar.classList.remove('open');
+      if (backdrop) backdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (sidebar.classList.contains('open')) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      });
+    }
+
+    if (backdrop) {
+      backdrop.addEventListener('click', closeSidebar);
+    }
+
+    // Close on navigation link click on mobile
+    sidebar.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 1024) closeSidebar();
+      });
     });
 
-    // Close on outside click on mobile
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 1024 && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
-        sidebar.classList.remove('open');
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1024 && sidebar.classList.contains('open')) {
+        closeSidebar();
       }
     });
   }
