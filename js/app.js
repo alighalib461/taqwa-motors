@@ -5,7 +5,7 @@
  */
 
 // Global State
-let currentFilterCategory = 'all';
+let currentFilterCategory = 'available'; // Default to Available vehicles
 let currentSortBy = 'featured';
 let currentViewMode = 'grid';
 let isInventoryLoading = false;
@@ -221,8 +221,14 @@ function renderInventoryGrid() {
   const inventory = Array.isArray(window.INVENTORY_DATA) ? window.INVENTORY_DATA : [];
 
   let list = inventory.filter(car => {
-    // Category filter tab
-    if (currentFilterCategory !== 'all') {
+    // Status / Category Filter Tab (Available, Sold, Cancel, All)
+    if (currentFilterCategory === 'available') {
+      if (car.status && car.status !== 'available') return false;
+    } else if (currentFilterCategory === 'sold') {
+      if (car.status !== 'sold') return false;
+    } else if (currentFilterCategory === 'cancelled' || currentFilterCategory === 'cancel') {
+      if (car.status !== 'cancelled') return false;
+    } else if (currentFilterCategory !== 'all') {
       if (currentFilterCategory === 'suv' && !(car.bodyType && (car.bodyType.includes('SUV') || car.bodyType.includes('Crossover'))) && !car.model.toLowerCase().includes('fortuner') && !car.model.toLowerCase().includes('prado')) return false;
       if (currentFilterCategory === 'sedan' && !(car.bodyType && car.bodyType.includes('Sedan')) && !car.model.toLowerCase().includes('civic') && !car.model.toLowerCase().includes('corolla') && !car.model.toLowerCase().includes('city')) return false;
       if (currentFilterCategory === 'hybrid' && car.fuelType !== 'Hybrid' && car.fuelType !== 'Electric' && !(car.conditionGrade && car.conditionGrade.toLowerCase().includes('hybrid'))) return false;
@@ -854,6 +860,74 @@ async function loadPublicInventoryFromSupabase() {
 }
 window.loadPublicInventoryFromSupabase = loadPublicInventoryFromSupabase;
 
+// Trust Metrics Number Counter Animation (0 -> Final Target Value)
+function initCounterAnimation() {
+  const counters = document.querySelectorAll('.stat-number[data-target]');
+  if (!counters.length) return;
+
+  let hasAnimated = false;
+
+  const animateCounters = () => {
+    if (hasAnimated) return;
+    hasAnimated = true;
+
+    counters.forEach(counter => {
+      const target = parseFloat(counter.getAttribute('data-target'));
+      const suffix = counter.getAttribute('data-suffix') || '';
+      const decimals = parseInt(counter.getAttribute('data-decimals') || '0', 10);
+      const duration = 2000; // 2 seconds animation
+      let startTimestamp = null;
+
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const elapsed = timestamp - startTimestamp;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Ease Out Cubic: 1 - (1 - progress)^3
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = ease * target;
+
+        if (decimals > 0) {
+          counter.textContent = current.toFixed(decimals) + suffix;
+        } else {
+          counter.textContent = Math.floor(current).toLocaleString('en-US') + suffix;
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          // Guarantee exact final value
+          if (decimals > 0) {
+            counter.textContent = target.toFixed(decimals) + suffix;
+          } else {
+            counter.textContent = target.toLocaleString('en-US') + suffix;
+          }
+        }
+      };
+
+      requestAnimationFrame(step);
+    });
+  };
+
+  const statsSection = document.getElementById('trustStatsGrid') || document.querySelector('.trust-stats-grid');
+  if (statsSection && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounters();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    observer.observe(statsSection);
+  } else {
+    // Fallback: trigger after 300ms
+    setTimeout(animateCounters, 300);
+  }
+}
+window.initCounterAnimation = initCounterAnimation;
+
 // Initialize Application
 document.addEventListener("DOMContentLoaded", () => {
   renderServices();
@@ -861,6 +935,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderFAQs();
   updateDealershipStatus();
   setupAppEvents();
+  initCounterAnimation();
 
   if (window.initEmiCalculator) window.initEmiCalculator();
   if (window.initWhatsAppDesk) window.initWhatsAppDesk();

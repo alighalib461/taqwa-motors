@@ -206,22 +206,22 @@
         </form>
       </div>
 
-      <!-- Trust Metrics Counters Grid (REQUIREMENT 15: 15+, 2500+, 100%, 4.9 IN TAQWA RED) -->
-      <div class="trust-stats-grid reveal-on-scroll">
+      <!-- Trust Metrics Counters Grid: Starting from 0 and animating to final values -->
+      <div class="trust-stats-grid reveal-on-scroll" id="trustStatsGrid">
         <div class="trust-stat-card">
-          <div class="stat-number">15+</div>
-          <div class="stat-label">Years of Trust</div>
+          <div class="stat-number" data-target="15" data-suffix="+" data-decimals="0">0</div>
+          <div class="stat-label">Years of Experience</div>
         </div>
         <div class="trust-stat-card">
-          <div class="stat-number">2,500+</div>
+          <div class="stat-number" data-target="2500" data-suffix="+" data-decimals="0">0</div>
           <div class="stat-label">Cars Delivered</div>
         </div>
         <div class="trust-stat-card">
-          <div class="stat-number">100%</div>
+          <div class="stat-number" data-target="100" data-suffix="%" data-decimals="0">0</div>
           <div class="stat-label">Verified Auction Sheets</div>
         </div>
         <div class="trust-stat-card">
-          <div class="stat-number">4.9 ★</div>
+          <div class="stat-number" data-target="4.9" data-suffix=" ★" data-decimals="1">0.0</div>
           <div class="stat-label">Customer Rating</div>
         </div>
       </div>
@@ -229,7 +229,7 @@
   </section>
 
   <!-- ========================================================================
-       3. VEHICLE INVENTORY HUB (REQUIREMENT 16: IMMEDIATELY AFTER HERO)
+       3. VEHICLE INVENTORY HUB (IMMEDIATELY AFTER HERO)
        Clean White Background inspired by Sehgal Motorsports visual reference
        ======================================================================== -->
   <section class="section section-inventory-hub" id="inventory">
@@ -242,13 +242,12 @@
         </p>
       </div>
 
-      <!-- Category Filter Tabs -->
+      <!-- Status Filter Tabs: Available, Sold, Cancel -->
       <div class="filter-tabs-wrapper reveal-on-scroll">
-        <button class="tab-btn featured-tab-btn active" data-category="all">All Stock</button>
-        <button class="tab-btn featured-tab-btn" data-category="suv">Luxury SUVs</button>
-        <button class="tab-btn featured-tab-btn" data-category="sedan">Executive Sedans</button>
-        <button class="tab-btn featured-tab-btn" data-category="hybrid">Hybrids & JDM</button>
-        <button class="tab-btn featured-tab-btn" data-category="4x4">4x4 & Off-Road</button>
+        <button class="tab-btn featured-tab-btn active" data-category="available">Available</button>
+        <button class="tab-btn featured-tab-btn" data-category="sold">Sold</button>
+        <button class="tab-btn featured-tab-btn" data-category="cancelled">Cancel</button>
+        <button class="tab-btn featured-tab-btn" data-category="all">All Stock</button>
       </div>
 
       <!-- Inventory Layout (Sidebar Filters + Results Grid) -->
