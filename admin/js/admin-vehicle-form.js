@@ -5,6 +5,7 @@
 
 let isEditMode = false;
 let editingVehicleId = null;
+let editingVehicleStockNumber = null;
 let stagedFiles = []; // { file, previewUrl, isPrimary, sortOrder }
 let existingImages = []; // { id, image_url, is_primary, sort_order }
 
@@ -23,12 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('pageSubtitleText').textContent = 'Update dealership vehicle specifications and media';
     document.getElementById('submitBtnText').textContent = 'Update Vehicle';
     loadVehicleForEdit(editingVehicleId);
-  } else {
-    // Generate an automatic Stock Number suggestion if desired
-    const stockInput = document.getElementById('vehicleStockNumber');
-    if (stockInput && !stockInput.value) {
-      stockInput.placeholder = 'e.g. TM-' + Math.floor(100 + Math.random() * 900);
-    }
   }
 });
 
@@ -180,23 +175,35 @@ async function loadVehicleForEdit(vehicleId) {
       return;
     }
 
+    editingVehicleStockNumber = v.stock_number;
+
     // Populate form inputs
-    document.getElementById('vehicleStockNumber').value = v.stock_number || '';
-    document.getElementById('vehicleMake').value = v.make || '';
-    document.getElementById('vehicleModel').value = v.model || '';
-    document.getElementById('vehicleVariant').value = v.variant || '';
-    document.getElementById('vehicleYear').value = v.year || '';
-    document.getElementById('vehicleRegNumber').value = v.registration_number || '';
-    document.getElementById('vehicleChassisNumber').value = v.chassis_number || '';
-    document.getElementById('vehicleMileage').value = v.mileage || '';
-    document.getElementById('vehicleFuelType').value = v.fuel_type || 'Petrol';
-    document.getElementById('vehicleTransmission').value = v.transmission || 'Automatic';
-    document.getElementById('vehicleColor').value = v.color || '';
-    document.getElementById('vehicleCondition').value = v.condition || '';
-    document.getElementById('vehiclePrice').value = v.price || '';
-    document.getElementById('vehicleStatus').value = v.status || 'available';
-    document.getElementById('vehicleFeatured').checked = !!v.featured;
-    document.getElementById('vehicleDescription').value = v.description || '';
+    if (document.getElementById('vehicleMake')) document.getElementById('vehicleMake').value = v.make || '';
+    if (document.getElementById('vehicleModel')) document.getElementById('vehicleModel').value = v.model || '';
+    if (document.getElementById('vehicleVariant')) document.getElementById('vehicleVariant').value = v.variant || '';
+    if (document.getElementById('vehicleYear')) document.getElementById('vehicleYear').value = v.year || '';
+    
+    // Extract Year of Import (from direct field or embedded metadata tag in description)
+    let importYear = v.year_of_import || '';
+    let rawDesc = v.description || '';
+    const importMatch = rawDesc.match(/\[Import:\s*(\d{4})\]/i);
+    if (importMatch) {
+      importYear = importMatch[1];
+      rawDesc = rawDesc.replace(/\s*\[Import:\s*\d{4}\]\s*/gi, '').trim();
+    }
+
+    if (document.getElementById('vehicleImportYear')) document.getElementById('vehicleImportYear').value = importYear;
+    if (document.getElementById('vehicleCondition')) document.getElementById('vehicleCondition').value = v.condition || '';
+    if (document.getElementById('vehicleRegNumber')) document.getElementById('vehicleRegNumber').value = v.registration_number || '';
+    if (document.getElementById('vehicleChassisNumber')) document.getElementById('vehicleChassisNumber').value = v.chassis_number || '';
+    if (document.getElementById('vehicleMileage')) document.getElementById('vehicleMileage').value = v.mileage || '';
+    if (document.getElementById('vehicleFuelType')) document.getElementById('vehicleFuelType').value = v.fuel_type || 'Petrol';
+    if (document.getElementById('vehicleTransmission')) document.getElementById('vehicleTransmission').value = v.transmission || 'Automatic';
+    if (document.getElementById('vehicleColor')) document.getElementById('vehicleColor').value = v.color || '';
+    if (document.getElementById('vehiclePrice')) document.getElementById('vehiclePrice').value = v.price || '';
+    if (document.getElementById('vehicleStatus')) document.getElementById('vehicleStatus').value = v.status || 'available';
+    if (document.getElementById('vehicleFeatured')) document.getElementById('vehicleFeatured').checked = !!v.featured;
+    if (document.getElementById('vehicleDescription')) document.getElementById('vehicleDescription').value = rawDesc;
 
     // Populate images
     existingImages = v.vehicle_images || [];
@@ -215,27 +222,35 @@ async function handleVehicleFormSubmit(e) {
   const btn = document.getElementById('saveVehicleBtn');
   const alertEl = document.getElementById('formAlert');
 
-  // Gather values
-  const stock_number = document.getElementById('vehicleStockNumber').value.trim();
+  // Auto-manage internal stock number to satisfy database constraints
+  const stock_number = editingVehicleStockNumber || ('TM-' + Math.floor(1000 + Math.random() * 9000));
   const make = document.getElementById('vehicleMake').value.trim();
   const model = document.getElementById('vehicleModel').value.trim();
   const variant = document.getElementById('vehicleVariant').value.trim();
   const year = parseInt(document.getElementById('vehicleYear').value, 10);
-  const registration_number = document.getElementById('vehicleRegNumber').value.trim() || null;
-  const chassis_number = document.getElementById('vehicleChassisNumber').value.trim() || null;
-  const mileage = document.getElementById('vehicleMileage').value ? parseInt(document.getElementById('vehicleMileage').value, 10) : null;
-  const fuel_type = document.getElementById('vehicleFuelType').value;
-  const transmission = document.getElementById('vehicleTransmission').value;
-  const color = document.getElementById('vehicleColor').value.trim();
-  const condition = document.getElementById('vehicleCondition').value.trim();
+  const importYear = document.getElementById('vehicleImportYear')?.value ? parseInt(document.getElementById('vehicleImportYear').value, 10) : null;
+  const registration_number = document.getElementById('vehicleRegNumber')?.value.trim() || null;
+  const chassis_number = document.getElementById('vehicleChassisNumber')?.value.trim() || null;
+  const mileage = document.getElementById('vehicleMileage')?.value ? parseInt(document.getElementById('vehicleMileage').value, 10) : null;
+  const fuel_type = document.getElementById('vehicleFuelType')?.value || 'Petrol';
+  const transmission = document.getElementById('vehicleTransmission')?.value || 'Automatic';
+  const color = document.getElementById('vehicleColor')?.value.trim() || '';
+  const condition = document.getElementById('vehicleCondition')?.value.trim() || '';
   const price = parseFloat(document.getElementById('vehiclePrice').value);
-  const status = document.getElementById('vehicleStatus').value;
-  const featured = document.getElementById('vehicleFeatured').checked;
-  const description = document.getElementById('vehicleDescription').value.trim();
+  const status = document.getElementById('vehicleStatus')?.value || 'available';
+  const featured = document.getElementById('vehicleFeatured')?.checked || false;
+  
+  let rawDescription = document.getElementById('vehicleDescription')?.value.trim() || '';
+  // Clean old tag and attach standard Import metadata tag if import year is specified
+  rawDescription = rawDescription.replace(/\s*\[Import:\s*\d{4}\]\s*/gi, '').trim();
+  let description = rawDescription;
+  if (importYear) {
+    description = rawDescription ? `${rawDescription}\n\n[Import: ${importYear}]` : `[Import: ${importYear}]`;
+  }
 
   // Validations
-  if (!stock_number || !make || !model || !year || isNaN(price)) {
-    showFormAlert('Please fill in all required fields (Stock #, Make, Model, Year, Asking Price).', 'danger');
+  if (!make || !model || !year || isNaN(price)) {
+    showFormAlert('Please fill in all required fields (Make, Model, Year, Asking Price).', 'danger');
     return;
   }
 
@@ -249,6 +264,10 @@ async function handleVehicleFormSubmit(e) {
   }
   if (year < 1900 || year > 2100) {
     showFormAlert('Please enter a valid model year (1900 - 2100).', 'danger');
+    return;
+  }
+  if (importYear && (importYear < 1900 || importYear > 2100)) {
+    showFormAlert('Please enter a valid year of import (1900 - 2100).', 'danger');
     return;
   }
 
@@ -382,7 +401,7 @@ async function handleVehicleFormSubmit(e) {
       }
     }
 
-    showFormAlert(`Vehicle [${stock_number}] successfully ${isEditMode ? 'updated' : 'added'}! Redirecting...`, 'success');
+    showFormAlert(`Vehicle successfully ${isEditMode ? 'updated' : 'added'}! Redirecting...`, 'success');
 
     setTimeout(() => {
       window.location.href = `inventory-detail.html?id=${targetVehicleId}`;

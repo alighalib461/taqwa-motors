@@ -43,38 +43,46 @@ function showToast(message, duration = 3000) {
 }
 window.showToast = showToast;
 
-// Format Price in Lacs / Crores
+// Format Price in PKR (REQUIREMENT 7: EXACT AND UNROUNDED)
 function formatPKR(val) {
-  const num = Number(val) || 0;
+  const num = Number(val);
+  if (isNaN(num)) return `Rs. ${val || '0'}`;
+  
+  // Format based on value scale
   if (num >= 10000000) {
-    return `PKR ${(num / 10000000).toFixed(2)} Crore`;
+    const crore = (num / 10000000).toFixed(2).replace(/\.00$/, '');
+    return `PKR ${crore} Crore`;
   }
   if (num >= 100000) {
-    return `PKR ${(num / 100000).toFixed(1)} Lacs`;
+    const lacs = (num / 100000).toFixed(2).replace(/\.00$/, '');
+    return `PKR ${lacs} Lacs`;
   }
-  return `PKR ${num.toLocaleString()}`;
+  // Fully preserves exact prices like 2570, 2575, 2580
+  return `Rs. ${num.toLocaleString('en-PK')}`;
 }
 window.formatPKR = formatPKR;
 
-// Transform raw Supabase public_inventory row into UI vehicle object
+// Transform raw DB vehicle row into UI vehicle object
 function transformDbVehicle(row, imagesMap) {
-  const carImages = imagesMap[row.id] && imagesMap[row.id].length > 0
+  const carImages = imagesMap && imagesMap[row.id] && imagesMap[row.id].length > 0
     ? imagesMap[row.id]
     : [DEFAULT_CAR_FALLBACK_IMAGE];
 
   const priceNum = Number(row.price) || 0;
   const priceFormatted = formatPKR(priceNum);
   const mileageNum = Number(row.mileage) || 0;
-  const mileageFormatted = `${mileageNum.toLocaleString()} km`;
+  const mileageFormatted = mileageNum > 0 ? `${mileageNum.toLocaleString()} km` : 'Unregistered / Brand New';
 
   const status = (row.status || 'available').toLowerCase();
-  let badge = 'Verified Stock';
+  let badge = 'Verified';
   if (status === 'sold') {
     badge = 'Sold';
+  } else if (status === 'cancelled') {
+    badge = 'Cancelled';
   } else if (status === 'reserved') {
     badge = 'Reserved';
   } else if (row.featured) {
-    badge = 'Featured Arrival';
+    badge = 'Featured';
   } else if (row.condition && row.condition.toLowerCase().includes('brand')) {
     badge = 'Brand New';
   }
@@ -82,10 +90,13 @@ function transformDbVehicle(row, imagesMap) {
   // Key Highlights
   const keySpecs = [];
   if (row.year) keySpecs.push(`${row.year} Model`);
+  if (row.year_of_import || row.import_year) keySpecs.push(`Import: ${row.year_of_import || row.import_year}`);
   if (row.transmission) keySpecs.push(row.transmission);
   if (row.fuel_type) keySpecs.push(row.fuel_type);
   if (row.color) keySpecs.push(`Color: ${row.color}`);
-  if (row.condition) keySpecs.push(`Grade: ${row.condition}`);
+  if (row.condition) keySpecs.push(row.condition);
+
+  const importYear = row.year_of_import || row.import_year || null;
 
   return {
     id: row.id,
@@ -95,8 +106,9 @@ function transformDbVehicle(row, imagesMap) {
     status: status,
     make: row.make || 'Toyota',
     model: row.model || 'Vehicle',
-    variant: row.variant || 'Standard',
+    variant: row.variant || '',
     year: row.year || new Date().getFullYear(),
+    yearOfImport: importYear,
     price: priceNum,
     priceFormatted: priceFormatted,
     mileage: mileageNum,
@@ -111,7 +123,7 @@ function transformDbVehicle(row, imagesMap) {
     color: row.color || 'White',
     interiorColor: 'Standard Interior',
     seatingCapacity: 5,
-    conditionGrade: row.condition || 'Certified 9.5/10',
+    conditionGrade: row.condition || '',
     description: row.description || `${row.year} ${row.make} ${row.model} ${row.variant || ''} available for immediate inspection and delivery at Taqwa Motors showroom.`,
     images: carImages,
     keySpecs: keySpecs,
@@ -127,131 +139,65 @@ function transformDbVehicle(row, imagesMap) {
       suspension: "Passed 150-Point Technical Check",
       interior: "Clean Verified",
       tires: "Good Tread Life Remaining",
-      score: row.condition || "9.5 / 10"
+      score: row.condition || "Verified Quality"
     }
   };
 }
 
-// Generate Vehicle Card HTML
+// Generate Vehicle Card HTML (REQUIREMENT 3, 4, 5, 6, 14: SEHGAL MOTORSPORTS REFERENCE STYLE)
 function renderCarCard(car) {
   let badgeClass = 'badge-regular';
   if (car.status === 'sold') badgeClass = 'badge-sold';
+  else if (car.status === 'cancelled') badgeClass = 'badge-cancelled';
   else if (car.status === 'reserved') badgeClass = 'badge-reserved';
-  else if (car.badge.includes('VIP')) badgeClass = 'badge-vip';
-  else if (car.badge.includes('Featured') || car.badge.includes('Hot')) badgeClass = 'badge-featured';
-  else if (car.badge.includes('Verified') || car.status === 'available') badgeClass = 'badge-verified';
+  else if (car.badge.includes('Featured') || car.featured) badgeClass = 'badge-featured';
+  else if (car.status === 'available') badgeClass = 'badge-available';
 
   const isSold = car.status === 'sold';
+  const isCancelled = car.status === 'cancelled';
   const isReserved = car.status === 'reserved';
 
+  let statusText = car.priceFormatted;
+  if (isSold) statusText = 'SOLD';
+  else if (isCancelled) statusText = 'CANCELLED';
+  else if (isReserved) statusText = 'RESERVED';
+
+  // Build specifications line (e.g. 2023 • Automatic • Petrol)
+  const specsLine = [
+    car.variant,
+    car.transmission,
+    car.fuelType
+  ].filter(Boolean).join(' • ');
+
   return `
-    <article class="car-card reveal-on-scroll ${isSold ? 'car-card-sold' : ''}" data-car-id="${car.id}">
+    <article class="car-card reveal-on-scroll ${isSold ? 'car-card-sold' : (isCancelled ? 'car-card-cancelled' : '')}" data-car-id="${car.id}" onclick="window.openCarModal('${car.id}')">
       <div class="car-image-container">
-        <img src="${car.images[0]}" alt="${car.year} ${car.make} ${car.model} ${car.variant}" class="car-image" loading="lazy" onerror="this.onerror=null; this.src='${DEFAULT_CAR_FALLBACK_IMAGE}';">
+        <img src="${car.images[0]}" alt="${car.year} ${car.make} ${car.model}" class="car-image" loading="lazy" onerror="this.onerror=null; this.src='${DEFAULT_CAR_FALLBACK_IMAGE}';">
         <span class="car-badge ${badgeClass}">${car.badge}</span>
-        <span class="car-reg-tag">${car.stockNumber}</span>
-        <button class="car-compare-toggle" data-car-id="${car.id}" onclick="window.toggleCompareCar('${car.id}')" title="Compare this vehicle">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          Compare
-        </button>
+        ${car.yearOfImport ? `<span class="car-import-tag">Import: ${car.yearOfImport}</span>` : ''}
       </div>
 
       <div class="car-card-body">
-        <div class="car-title-block">
-          <div class="car-year-make">${car.year} • ${car.make}</div>
-          <h3 class="car-model-name">${car.model}</h3>
-          <div class="car-variant-name">${car.variant}</div>
+        <h3 class="car-card-title">${car.year} ${car.make} ${car.model}</h3>
+        <div class="car-card-subtitle">${specsLine || car.make}</div>
+        ${car.conditionGrade ? `<div class="car-card-condition">${car.conditionGrade}</div>` : ''}
+
+        <div class="car-card-price">
+          <span class="price-val">${statusText}</span>
         </div>
 
-        <div class="car-specs-grid">
-          <div class="car-spec-item">
-            <span class="spec-icon-label">🛣️ Mileage</span>
-            <span class="spec-value">${car.mileageFormatted}</span>
-          </div>
-          <div class="car-spec-item">
-            <span class="spec-icon-label">⚡ Fuel</span>
-            <span class="spec-value">${car.fuelType}</span>
-          </div>
-          <div class="car-spec-item">
-            <span class="spec-icon-label">⚙️ Trans.</span>
-            <span class="spec-value">${car.transmission}</span>
-          </div>
-        </div>
-
-        <div class="car-card-footer">
-          <div class="car-price-row">
-            <span class="car-price-label">${isSold ? 'Status' : (isReserved ? 'Status' : 'Demand Price')}</span>
-            <span class="car-price-value" style="${isSold ? 'color: #94A3B8;' : (isReserved ? 'color: #F59E0B;' : '')}">
-              ${isSold ? 'SOLD' : (isReserved ? 'RESERVED' : car.priceFormatted)}
-            </span>
-          </div>
-
-          <div class="car-card-actions">
-            <button class="btn btn-outline btn-sm" onclick="window.openCarModal('${car.id}')">
-              View Details
-            </button>
-            <button class="btn btn-whatsapp btn-sm" onclick="window.inquireCarWhatsApp('${car.id}')" title="WhatsApp Sales Desk">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-              WhatsApp
-            </button>
-          </div>
+        <div class="car-card-actions" onclick="event.stopPropagation();">
+          <a href="tel:03335406173" class="btn-call-now" title="Call Showroom (0333-5406173)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <span>Call Now</span>
+          </a>
+          <a href="https://wa.me/923335406173?text=Assalam-o-Alaikum%20Taqwa%20Motors,%20I%20am%20interested%20in%20the%20${encodeURIComponent(car.year + ' ' + car.make + ' ' + car.model + ' (' + car.priceFormatted + ')')}" target="_blank" rel="noopener noreferrer" class="btn-card-whatsapp" title="WhatsApp Sales Desk">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+          </a>
         </div>
       </div>
     </article>
   `;
-}
-
-// Render Featured Cars in Home Page
-function renderFeaturedCars() {
-  const container = document.getElementById("featuredCarsGrid");
-  if (!container) return;
-
-  if (isInventoryLoading) {
-    container.innerHTML = `
-      <div class="inventory-loading-skeleton">
-        <div class="loading-spinner" style="margin: 0 auto 16px; width: 36px; height: 36px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #D32F2F; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-        <p style="color: #94A3B8; font-size: 0.95rem;">Loading featured showroom vehicles...</p>
-      </div>
-    `;
-    return;
-  }
-
-  const inventory = Array.isArray(window.INVENTORY_DATA) ? window.INVENTORY_DATA : [];
-
-  if (inventory.length === 0) {
-    container.innerHTML = `
-      <div class="inventory-empty-state">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.5" style="margin-bottom: 12px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <h4 style="color: #FFFFFF; margin-bottom: 6px;">New Stock Arriving Soon</h4>
-        <p style="color: #94A3B8; font-size: 0.9rem; max-width: 480px; margin: 0 auto 16px;">Our showroom inventory is currently being updated. Inquire on WhatsApp for newly arrived vehicles.</p>
-        <button class="btn btn-whatsapp btn-sm glow-hover" onclick="window.openWhatsApp('Assalam-o-Alaikum Taqwa Motors, I want to inquire about newly arrived cars.')">
-          Inquire via WhatsApp
-        </button>
-      </div>
-    `;
-    return;
-  }
-
-  const featured = inventory.filter(car => {
-    if (currentFilterCategory === 'suv') return (car.bodyType && (car.bodyType.includes('SUV') || car.bodyType.includes('Crossover'))) || car.model.toLowerCase().includes('fortuner') || car.model.toLowerCase().includes('prado');
-    if (currentFilterCategory === 'sedan') return (car.bodyType && car.bodyType.includes('Sedan')) || car.model.toLowerCase().includes('civic') || car.model.toLowerCase().includes('corolla') || car.model.toLowerCase().includes('city');
-    if (currentFilterCategory === 'hybrid') return car.fuelType === 'Hybrid' || car.fuelType === 'Electric';
-    if (currentFilterCategory === '4x4') return car.variant.toLowerCase().includes('sigma') || car.model.toLowerCase().includes('cruiser') || car.model.toLowerCase().includes('hilux') || car.model.toLowerCase().includes('prado');
-    return car.featured || true;
-  });
-
-  if (featured.length === 0) {
-    container.innerHTML = `
-      <div class="inventory-empty-state">
-        <p style="color: #94A3B8;">No vehicles found in this category. Showing all available stock.</p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = featured.slice(0, 6).map(renderCarCard).join('');
-  triggerScrollReveal();
-  window.updateCompareUI();
 }
 
 // Filter and Render Full Inventory Hub
@@ -263,9 +209,9 @@ function renderInventoryGrid() {
   if (isInventoryLoading) {
     container.innerHTML = `
       <div class="inventory-loading-skeleton">
-        <div class="loading-spinner" style="margin: 0 auto 16px; width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #D32F2F; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-        <h4 style="color: #FFFFFF; margin-bottom: 6px;">Connecting to Live Dealership Inventory...</h4>
-        <p style="color: #94A3B8; font-size: 0.92rem;">Fetching verified vehicles from Taqwa Motors database</p>
+        <div class="loading-spinner" style="margin: 0 auto 16px; width: 36px; height: 36px; border: 3px solid #E2E8F0; border-top-color: #D32F2F; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+        <h4 style="color: #0F172A; margin-bottom: 4px;">Loading Dealership Inventory...</h4>
+        <p style="color: #64748B; font-size: 0.9rem;">Fetching verified vehicles from Taqwa Motors database</p>
       </div>
     `;
     if (countSpan) countSpan.textContent = "Loading...";
@@ -275,6 +221,14 @@ function renderInventoryGrid() {
   const inventory = Array.isArray(window.INVENTORY_DATA) ? window.INVENTORY_DATA : [];
 
   let list = inventory.filter(car => {
+    // Category filter tab
+    if (currentFilterCategory !== 'all') {
+      if (currentFilterCategory === 'suv' && !(car.bodyType && (car.bodyType.includes('SUV') || car.bodyType.includes('Crossover'))) && !car.model.toLowerCase().includes('fortuner') && !car.model.toLowerCase().includes('prado')) return false;
+      if (currentFilterCategory === 'sedan' && !(car.bodyType && car.bodyType.includes('Sedan')) && !car.model.toLowerCase().includes('civic') && !car.model.toLowerCase().includes('corolla') && !car.model.toLowerCase().includes('city')) return false;
+      if (currentFilterCategory === 'hybrid' && car.fuelType !== 'Hybrid' && car.fuelType !== 'Electric' && !(car.conditionGrade && car.conditionGrade.toLowerCase().includes('hybrid'))) return false;
+      if (currentFilterCategory === '4x4' && !car.variant.toLowerCase().includes('sigma') && !car.model.toLowerCase().includes('cruiser') && !car.model.toLowerCase().includes('hilux') && !car.model.toLowerCase().includes('prado') && !car.model.toLowerCase().includes('revo')) return false;
+    }
+
     // Search query
     if (activeFilters.search) {
       const q = activeFilters.search.toLowerCase();
@@ -282,9 +236,9 @@ function renderInventoryGrid() {
                     car.model.toLowerCase().includes(q) ||
                     car.variant.toLowerCase().includes(q) ||
                     car.year.toString().includes(q) ||
-                    car.stockNumber.toLowerCase().includes(q) ||
-                    car.color.toLowerCase().includes(q) ||
-                    car.id.toLowerCase().includes(q);
+                    (car.yearOfImport && car.yearOfImport.toString().includes(q)) ||
+                    (car.conditionGrade && car.conditionGrade.toLowerCase().includes(q)) ||
+                    car.color.toLowerCase().includes(q);
       if (!match) return false;
     }
 
@@ -298,7 +252,7 @@ function renderInventoryGrid() {
     if (car.price > activeFilters.maxPrice) return false;
 
     // Year
-    if (activeFilters.year !== 'all' && car.year.toString() !== activeFilters.year) return false;
+    if (activeFilters.year !== 'all' && car.year.toString() !== activeFilters.year.toString()) return false;
 
     // Fuel Type
     if (activeFilters.fuelType !== 'all' && car.fuelType.toLowerCase() !== activeFilters.fuelType.toLowerCase()) return false;
@@ -306,13 +260,10 @@ function renderInventoryGrid() {
     // Transmission
     if (activeFilters.transmission !== 'all' && !car.transmission.toLowerCase().includes(activeFilters.transmission.toLowerCase())) return false;
 
-    // Reg City
-    if (activeFilters.registrationCity !== 'all' && !car.registrationCity.toLowerCase().includes(activeFilters.registrationCity.toLowerCase())) return false;
-
     return true;
   });
 
-  // Sorting
+  // Sort
   if (currentSortBy === 'price-asc') {
     list.sort((a, b) => a.price - b.price);
   } else if (currentSortBy === 'price-desc') {
@@ -321,26 +272,22 @@ function renderInventoryGrid() {
     list.sort((a, b) => b.year - a.year);
   } else if (currentSortBy === 'mileage-asc') {
     list.sort((a, b) => a.mileage - b.mileage);
+  } else {
+    // Featured first
+    list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
   }
 
-  if (countSpan) {
-    countSpan.textContent = `Showing ${list.length} of ${inventory.length} Cars`;
-  }
+  if (countSpan) countSpan.textContent = `Showing ${list.length} Vehicles`;
 
   if (list.length === 0) {
     container.innerHTML = `
       <div class="inventory-empty-state">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.5" style="margin-bottom: 16px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <h3 style="color:#FFFFFF; margin-bottom: 8px;">No Vehicles Match Your Criteria</h3>
-        <p style="color:#94A3B8; margin-bottom: 20px; max-width: 450px; margin-left: auto; margin-right: auto;">
-          Try adjusting your price range or clearing filters to see all available showroom stock.
-        </p>
-        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-          <button class="btn btn-outline" onclick="window.resetAllFilters()">Reset All Filters</button>
-          <button class="btn btn-whatsapp" onclick="window.openWhatsApp('Assalam-o-Alaikum Taqwa Motors, I am looking for a specific car that was not found in filters.')">
-            Ask Sales Desk
-          </button>
-        </div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="1.5" style="margin-bottom: 12px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <h4 style="color: #0F172A; margin-bottom: 6px;">No Matching Vehicles Found</h4>
+        <p style="color: #64748B; font-size: 0.9rem; max-width: 440px; margin: 0 auto 16px;">Try adjusting your filters or search keywords, or inquire with our sales desk on WhatsApp.</p>
+        <button class="btn btn-whatsapp btn-sm" onclick="window.openWhatsApp('Assalam-o-Alaikum Taqwa Motors, I am looking for a specific car.')">
+          Inquire via WhatsApp
+        </button>
       </div>
     `;
     return;
@@ -348,10 +295,8 @@ function renderInventoryGrid() {
 
   container.innerHTML = list.map(renderCarCard).join('');
   triggerScrollReveal();
-  window.updateCompareUI();
 }
 
-// Reset all filters
 function resetAllFilters() {
   activeFilters = {
     search: '',
@@ -368,27 +313,28 @@ function resetAllFilters() {
   const searchInput = document.getElementById("inventorySearchInput");
   if (searchInput) searchInput.value = '';
 
-  const priceRange = document.getElementById("sidebarPriceRange");
-  if (priceRange) {
-    priceRange.value = 100000000;
-    const priceValSpan = document.getElementById("sidebarPriceVal");
-    if (priceValSpan) priceValSpan.textContent = "PKR 10 Crore";
-  }
+  const slider = document.getElementById("sidebarPriceRange");
+  if (slider) slider.value = 100000000;
 
-  document.querySelectorAll(".sidebar-select").forEach(sel => sel.value = 'all');
+  const priceVal = document.getElementById("sidebarPriceVal");
+  if (priceVal) priceVal.textContent = "PKR 10 Crore";
+
+  const selects = ["filterMake", "filterBodyType", "filterYear", "filterFuel", "filterTransmission", "filterRegCity"];
+  selects.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = 'all';
+  });
+
   renderInventoryGrid();
-  showToast("Filters reset successfully");
+  showToast("All filters have been reset");
 }
 window.resetAllFilters = resetAllFilters;
 
-// Open Car Details Modal
+// Open Car Details Modal (REQUIREMENT 11, 13: DYNAMIC VEHICLE SPECS)
 function openCarModal(carId) {
   const inventory = Array.isArray(window.INVENTORY_DATA) ? window.INVENTORY_DATA : [];
-  const car = inventory.find(c => c.id === carId || c.stockNumber === carId);
-  if (!car) {
-    showToast("Vehicle details could not be found.");
-    return;
-  }
+  const car = inventory.find(c => c.id === carId);
+  if (!car) return;
 
   const modal = document.getElementById("vehicleModal");
   if (!modal) return;
@@ -396,15 +342,14 @@ function openCarModal(carId) {
   // Set modal gallery
   const mainImg = document.getElementById("modalMainImage");
   const thumbsRow = document.getElementById("modalThumbsRow");
-  if (mainImg) {
+  if (mainImg && car.images && car.images.length > 0) {
     mainImg.src = car.images[0];
-    mainImg.onerror = () => { mainImg.src = DEFAULT_CAR_FALLBACK_IMAGE; };
   }
 
   if (thumbsRow) {
-    thumbsRow.innerHTML = car.images.map((img, idx) => `
+    thumbsRow.innerHTML = (car.images || []).map((img, idx) => `
       <div class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="window.switchModalGalleryImage(this, '${img}')">
-        <img src="${img}" alt="${car.model} angle ${idx+1}" onerror="this.onerror=null; this.src='${DEFAULT_CAR_FALLBACK_IMAGE}';">
+        <img src="${img}" alt="Thumb" onerror="this.src='${DEFAULT_CAR_FALLBACK_IMAGE}'">
       </div>
     `).join('');
   }
@@ -414,22 +359,24 @@ function openCarModal(carId) {
   if (titleEl) titleEl.textContent = `${car.year} ${car.make} ${car.model}`;
 
   const variantEl = document.getElementById("modalCarVariant");
-  if (variantEl) variantEl.textContent = `${car.variant} • ${car.color} (Stock Ref: ${car.stockNumber})`;
+  if (variantEl) variantEl.textContent = `${car.variant || 'Standard'} ${car.color ? '• ' + car.color : ''}`;
 
   const priceEl = document.getElementById("modalCarPrice");
   if (priceEl) {
     if (car.status === 'sold') {
-      priceEl.innerHTML = `<span style="color: #94A3B8; font-size: 1.2rem; font-weight: 800;">STATUS: SOLD</span>`;
+      priceEl.innerHTML = `<span style="color: #64748B; font-size: 1.3rem; font-weight: 800;">STATUS: SOLD</span>`;
+    } else if (car.status === 'cancelled') {
+      priceEl.innerHTML = `<span style="color: #DC2626; font-size: 1.3rem; font-weight: 800;">STATUS: CANCELLED</span>`;
     } else if (car.status === 'reserved') {
-      priceEl.innerHTML = `<span style="color: #F59E0B; font-size: 1.2rem; font-weight: 800;">STATUS: RESERVED</span> (${car.priceFormatted})`;
+      priceEl.innerHTML = `<span style="color: #D97706; font-size: 1.3rem; font-weight: 800;">STATUS: RESERVED</span> (${car.priceFormatted})`;
     } else {
       priceEl.textContent = car.priceFormatted;
     }
   }
 
-  // Inspection Rating
+  // Inspection Score
   const inspScore = document.getElementById("modalInspectionScore");
-  if (inspScore) inspScore.textContent = car.conditionGrade;
+  if (inspScore) inspScore.textContent = car.conditionGrade || "Verified Quality";
 
   const inspDetails = document.getElementById("modalInspectionDetails");
   if (inspDetails) inspDetails.textContent = `${car.inspection.body} • ${car.inspection.engine}`;
@@ -449,19 +396,33 @@ function openCarModal(carId) {
     `).join('');
   }
 
-  // Spec Matrix
+  // Spec Matrix (INCLUDES YEAR OF IMPORT)
   const matrixContainer = document.getElementById("modalSpecMatrix");
   if (matrixContainer) {
-    matrixContainer.innerHTML = `
+    let matrixHtml = `
       <div class="spec-matrix-item"><div class="spec-matrix-label">Mileage</div><div class="spec-matrix-val">${car.mileageFormatted}</div></div>
       <div class="spec-matrix-item"><div class="spec-matrix-label">Transmission</div><div class="spec-matrix-val">${car.transmission}</div></div>
       <div class="spec-matrix-item"><div class="spec-matrix-label">Fuel Type</div><div class="spec-matrix-val">${car.fuelType}</div></div>
-      <div class="spec-matrix-item"><div class="spec-matrix-label">Body Color</div><div class="spec-matrix-val">${car.color}</div></div>
+      <div class="spec-matrix-item"><div class="spec-matrix-label">Color</div><div class="spec-matrix-val">${car.color}</div></div>
       <div class="spec-matrix-item"><div class="spec-matrix-label">Model Year</div><div class="spec-matrix-val">${car.year}</div></div>
-      <div class="spec-matrix-item"><div class="spec-matrix-label">Stock Ref</div><div class="spec-matrix-val">${car.stockNumber}</div></div>
-      <div class="spec-matrix-item"><div class="spec-matrix-label">Condition</div><div class="spec-matrix-val">${car.conditionGrade}</div></div>
-      <div class="spec-matrix-item"><div class="spec-matrix-label">Status</div><div class="spec-matrix-val" style="text-transform:capitalize; font-weight:700; color:${car.status === 'sold' ? '#94A3B8' : (car.status === 'reserved' ? '#F59E0B' : '#34D399')}">${car.status}</div></div>
     `;
+
+    if (car.yearOfImport) {
+      matrixHtml += `<div class="spec-matrix-item"><div class="spec-matrix-label">Year of Import</div><div class="spec-matrix-val" style="color: var(--primary-red); font-weight:800;">${car.yearOfImport}</div></div>`;
+    }
+
+    if (car.conditionGrade) {
+      matrixHtml += `<div class="spec-matrix-item"><div class="spec-matrix-label">Condition</div><div class="spec-matrix-val">${car.conditionGrade}</div></div>`;
+    }
+
+    let statusColor = '#059669';
+    if (car.status === 'sold') statusColor = '#64748B';
+    if (car.status === 'cancelled') statusColor = '#DC2626';
+    if (car.status === 'reserved') statusColor = '#D97706';
+
+    matrixHtml += `<div class="spec-matrix-item"><div class="spec-matrix-label">Status</div><div class="spec-matrix-val" style="text-transform:capitalize; font-weight:800; color:${statusColor}">${car.status}</div></div>`;
+
+    matrixContainer.innerHTML = matrixHtml;
   }
 
   // Features Breakdown
@@ -469,23 +430,22 @@ function openCarModal(carId) {
   if (featuresContainer) {
     const allFeatures = [...car.features.safety, ...car.features.comfort, ...car.features.technology];
     featuresContainer.innerHTML = allFeatures.map(f => `
-      <div class="feature-pill">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        ${f}
-      </div>
+      <span class="feature-pill">✓ ${f}</span>
     `).join('');
   }
 
   // Modal Action Buttons
   const whatsappBtn = document.getElementById("modalWhatsAppBtn");
   if (whatsappBtn) {
-    whatsappBtn.onclick = () => window.inquireCarWhatsApp(car.id);
+    whatsappBtn.onclick = () => {
+      window.inquireCarWhatsApp(car.id);
+    };
   }
 
   const testDriveBtn = document.getElementById("modalTestDriveBtn");
   if (testDriveBtn) {
     testDriveBtn.onclick = () => {
-      window.bookTestDriveWhatsApp(car.id, "Valued Customer", "Tomorrow", "12:00 PM");
+      window.openWhatsApp(`Assalam-o-Alaikum Taqwa Motors, I would like to schedule a showroom visit to inspect the ${car.year} ${car.make} ${car.model}.`);
     };
   }
 
@@ -521,12 +481,12 @@ function renderServices() {
   if (!container) return;
 
   const icons = {
-    'shield-check': `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
-    'badge-check': `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
-    'file-text': `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`,
-    'arrows-repeat': `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>`,
-    'calculator': `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path></svg>`,
-    'gem': `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 3 18 3 22 9 12 22 2 9"></polygon></svg>`
+    'shield-check': `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+    'badge-check': `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
+    'file-text': `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`,
+    'arrows-repeat': `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>`,
+    'calculator': `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M8 10h.01"></path><path d="M12 10h.01"></path><path d="M16 10h.01"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path></svg>`,
+    'gem': `<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="6 3 18 3 22 9 12 22 2 9"></polygon></svg>`
   };
 
   if (window.SERVICES_DATA) {
@@ -570,11 +530,11 @@ function renderFAQs() {
   if (!container || !window.FAQS_DATA) return;
 
   container.innerHTML = window.FAQS_DATA.map((faq, idx) => `
-    <div class="pillar-card reveal-on-scroll" style="margin-bottom: 16px; padding: 22px 26px;">
-      <h4 style="font-size: 1.1rem; color: #FFFFFF; margin-bottom: 8px; display: flex; align-items: baseline; gap: 8px;">
-        <span style="color: #FF6B6B; font-weight: 800;">Q:</span> ${faq.q}
+    <div class="pillar-card reveal-on-scroll" style="margin-bottom: 14px; padding: 20px 24px;">
+      <h4 style="font-size: 1.05rem; color: var(--text-dark); margin-bottom: 6px; display: flex; align-items: baseline; gap: 8px;">
+        <span style="color: var(--primary-red); font-weight: 800;">Q:</span> ${faq.q}
       </h4>
-      <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">${faq.a}</p>
+      <p style="color: var(--text-dark-secondary); font-size: 0.92rem; line-height: 1.6;">${faq.a}</p>
     </div>
   `).join('');
 }
@@ -586,7 +546,7 @@ function triggerScrollReveal() {
 
   elements.forEach(el => {
     const rect = el.getBoundingClientRect();
-    if (rect.top <= windowHeight - 60) {
+    if (rect.top <= windowHeight - 40) {
       el.classList.add("is-revealed");
     }
   });
@@ -605,7 +565,7 @@ function updateDealershipStatus() {
   if (hour >= 8 && hour < 22) {
     statusEl.innerHTML = `<span class="status-dot"></span> Open Today: 8:00 AM – 10:00 PM`;
   } else {
-    statusEl.innerHTML = `<span class="status-dot" style="background:#F59E0B; box-shadow:0 0 8px #F59E0B;"></span> Showroom Opens at 8:00 AM`;
+    statusEl.innerHTML = `<span class="status-dot" style="background:#F59E0B;"></span> Showroom Opens at 8:00 AM`;
   }
 }
 
@@ -615,13 +575,13 @@ function setupAppEvents() {
   window.addEventListener("scroll", () => {
     const navbar = document.getElementById("mainNavbar");
     if (navbar) {
-      if (window.scrollY > 50) navbar.classList.add("scrolled");
+      if (window.scrollY > 40) navbar.classList.add("scrolled");
       else navbar.classList.remove("scrolled");
     }
     triggerScrollReveal();
   });
 
-  // Mobile Menu Toggle with Backdrop
+  // Mobile Menu Toggle
   const mobileToggle = document.getElementById("mobileNavToggle");
   const navMenu = document.getElementById("navMenu");
   if (mobileToggle && navMenu) {
@@ -672,13 +632,13 @@ function setupAppEvents() {
     });
   }
 
-  // Home Featured Tabs
+  // Category Filter Tabs
   document.querySelectorAll(".featured-tab-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       document.querySelectorAll(".featured-tab-btn").forEach(b => b.classList.remove("active"));
       e.target.classList.add("active");
       currentFilterCategory = e.target.getAttribute("data-category");
-      renderFeaturedCars();
+      renderInventoryGrid();
     });
   });
 
@@ -703,7 +663,7 @@ function setupAppEvents() {
       }
 
       renderInventoryGrid();
-      showToast("Filtered showroom stock according to your selection");
+      showToast("Filtered showroom inventory");
     });
   }
 
@@ -733,7 +693,6 @@ function setupAppEvents() {
     { id: "filterYear", key: "year" },
     { id: "filterFuel", key: "fuelType" },
     { id: "filterTransmission", key: "transmission" },
-    { id: "filterAssembly", key: "assembly" },
     { id: "filterRegCity", key: "registrationCity" }
   ];
 
@@ -777,7 +736,7 @@ Inquiry via Website Contact Form:
 Looking forward to your response.`;
 
       window.openWhatsApp(formattedMsg);
-      showToast("Redirecting your inquiry to Taqwa Motors WhatsApp Sales Desk...");
+      showToast("Redirecting your inquiry to Taqwa Motors WhatsApp...");
       contactForm.reset();
     });
   }
@@ -799,34 +758,46 @@ function checkDeepLinkModal() {
 // Load Public Inventory from Supabase
 async function loadPublicInventoryFromSupabase() {
   isInventoryLoading = true;
-  renderFeaturedCars();
   renderInventoryGrid();
 
   try {
     const supabase = typeof window.getSupabaseClient === 'function' ? window.getSupabaseClient() : null;
     if (!supabase) {
-      console.warn("Supabase client not initialized; fallback data will be preserved if available.");
+      console.warn("Supabase client not initialized.");
       isInventoryLoading = false;
-      renderFeaturedCars();
       renderInventoryGrid();
       return;
     }
 
-    // 1. Fetch from controlled public_inventory view
-    const { data: dbVehicles, error: vError } = await supabase
-      .from('public_inventory')
+    // 1. Fetch from vehicles or public_inventory view
+    let dbVehicles = null;
+    
+    const { data: vData, error: vErr } = await supabase
+      .from('vehicles')
       .select('*')
       .order('featured', { ascending: false })
       .order('created_at', { ascending: false });
 
-    if (vError) {
-      console.error("Error fetching public_inventory:", vError);
+    if (!vErr && vData) {
+      dbVehicles = vData;
+    } else {
+      const { data: pubData, error: pubErr } = await supabase
+        .from('public_inventory')
+        .select('*')
+        .order('featured', { ascending: false })
+        .order('created_at', { ascending: false });
+      if (!pubErr && pubData) {
+        dbVehicles = pubData;
+      }
+    }
+
+    if (!dbVehicles || dbVehicles.length === 0) {
       isInventoryLoading = false;
       renderInventoryGrid();
       return;
     }
 
-    // 2. Fetch public images for non-hidden vehicles
+    // 2. Fetch public images for vehicles
     const { data: dbImages, error: imgError } = await supabase
       .from('vehicle_images')
       .select('vehicle_id, image_url, is_primary, sort_order')
@@ -858,7 +829,7 @@ async function loadPublicInventoryFromSupabase() {
     const transformed = (dbVehicles || []).map(row => transformDbVehicle(row, imagesMap));
     window.INVENTORY_DATA = transformed;
 
-    // 5. Update Dynamic Filter Make options if vehicles exist
+    // 5. Update Dynamic Filter Make options
     if (transformed.length > 0) {
       const makes = Array.from(new Set(transformed.map(v => v.make).filter(Boolean)));
       const makeSelect = document.getElementById("filterMake");
@@ -877,7 +848,6 @@ async function loadPublicInventoryFromSupabase() {
     console.error("Failed to load inventory from Supabase:", err);
   } finally {
     isInventoryLoading = false;
-    renderFeaturedCars();
     renderInventoryGrid();
     checkDeepLinkModal();
   }

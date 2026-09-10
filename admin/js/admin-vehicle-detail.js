@@ -101,18 +101,24 @@ async function loadCompleteVehicleData() {
    1. OVERVIEW
    ========================================================================== */
 function renderVehicleOverview(v) {
-  document.getElementById('detailTitle').textContent = `${v.year} ${v.make} ${v.model} ${v.variant || ''}`;
-  document.getElementById('detailStockTag').textContent = v.stock_number;
-  document.getElementById('detailPrice').textContent = `PKR ${Number(v.price).toLocaleString('en-PK')}`;
+  const titleEl = document.getElementById('detailTitle');
+  if (titleEl) titleEl.textContent = `${v.year} ${v.make} ${v.model} ${v.variant || ''}`;
+  
+  const formattedPrice = Number.isInteger(Number(v.price)) ? Number(v.price).toLocaleString('en-PK') : Number(v.price).toFixed(2);
+  const priceEl = document.getElementById('detailPrice');
+  if (priceEl) priceEl.textContent = `PKR ${formattedPrice}`;
 
   const statusEl = document.getElementById('detailStatusBadge');
-  statusEl.className = `status-badge ${v.status}`;
-  statusEl.innerHTML = `<span class="status-dot"></span> <span>${v.status}</span>`;
+  if (statusEl) {
+    statusEl.className = `status-badge ${v.status}`;
+    statusEl.innerHTML = `<span class="status-dot"></span> <span>${v.status}</span>`;
+  }
 
   const statusSelect = document.getElementById('quickStatusSelect');
-  if (statusSelect) statusSelect.value = v.status;
+  if (statusSelect) statusSelect.value = v.status || 'available';
 
-  document.getElementById('editVehicleBtn').href = `inventory-edit.html?id=${v.id}`;
+  const editBtn = document.getElementById('editVehicleBtn');
+  if (editBtn) editBtn.href = `inventory-edit.html?id=${v.id}`;
 
   // Gallery
   const images = v.vehicle_images || [];
@@ -121,31 +127,44 @@ function renderVehicleOverview(v) {
 
   if (images.length > 0) {
     const primaryImg = images.find(img => img.is_primary) || images[0];
-    mainImgEl.src = primaryImg.image_url;
-    thumbsStrip.innerHTML = images.map((img, i) => `
-      <img src="${img.image_url}" alt="Photo ${i + 1}" class="${img.image_url === primaryImg.image_url ? 'active' : ''}" onclick="switchGalleryImage('${img.image_url}', this)">
-    `).join('');
+    if (mainImgEl) mainImgEl.src = primaryImg.image_url;
+    if (thumbsStrip) {
+      thumbsStrip.innerHTML = images.map((img, i) => `
+        <img src="${img.image_url}" alt="Photo ${i + 1}" class="${img.image_url === primaryImg.image_url ? 'active' : ''}" onclick="switchGalleryImage('${img.image_url}', this)">
+      `).join('');
+    }
   } else {
-    mainImgEl.src = '../assets/cars/fortuner_legender.jpg';
-    thumbsStrip.innerHTML = '<span style="font-size: 0.8rem; color: var(--admin-text-muted);">No photos uploaded yet.</span>';
+    if (mainImgEl) mainImgEl.src = '../assets/cars/fortuner_legender.jpg';
+    if (thumbsStrip) thumbsStrip.innerHTML = '<span style="font-size: 0.8rem; color: var(--admin-text-muted);">No photos uploaded yet.</span>';
+  }
+
+  // Parse Year of Import & Clean Description
+  let importYear = v.year_of_import || '';
+  let cleanDescription = v.description || '';
+  const importMatch = cleanDescription.match(/\[Import:\s*(\d{4})\]/i);
+  if (importMatch) {
+    importYear = importMatch[1];
+    cleanDescription = cleanDescription.replace(/\s*\[Import:\s*\d{4}\]\s*/gi, '').trim();
   }
 
   // Specs
-  document.getElementById('specMileage').textContent = v.mileage ? `${v.mileage.toLocaleString()} km` : 'N/A';
-  document.getElementById('specFuel').textContent = v.fuel_type || 'Petrol';
-  document.getElementById('specTransmission').textContent = v.transmission || 'Automatic';
-  document.getElementById('specColor').textContent = v.color || 'Standard';
-  document.getElementById('specCondition').textContent = v.condition || 'Pre-Owned';
-  document.getElementById('specFeatured').textContent = v.featured ? 'Yes (Featured)' : 'Standard';
+  if (document.getElementById('specModelYear')) document.getElementById('specModelYear').textContent = v.year;
+  if (document.getElementById('specImportYear')) document.getElementById('specImportYear').textContent = importYear || 'Not Specified';
+  if (document.getElementById('specCondition')) document.getElementById('specCondition').textContent = v.condition || 'Pre-Owned';
+  if (document.getElementById('specMileage')) document.getElementById('specMileage').textContent = v.mileage ? `${v.mileage.toLocaleString()} km` : 'N/A';
+  if (document.getElementById('specFuel')) document.getElementById('specFuel').textContent = v.fuel_type || 'Petrol';
+  if (document.getElementById('specTransmission')) document.getElementById('specTransmission').textContent = v.transmission || 'Automatic';
+  if (document.getElementById('specColor')) document.getElementById('specColor').textContent = v.color || 'Standard';
+  if (document.getElementById('specFeatured')) document.getElementById('specFeatured').textContent = v.featured ? 'Yes (Featured)' : 'Standard';
 
   // Private IDs
-  document.getElementById('privateRegNumber').textContent = v.registration_number || 'Unregistered';
-  document.getElementById('privateChassisNumber').textContent = v.chassis_number || 'Not Recorded';
-  document.getElementById('privateCreatedDate').textContent = new Date(v.created_at).toLocaleString();
-  document.getElementById('privateUpdatedDate').textContent = new Date(v.updated_at).toLocaleString();
+  if (document.getElementById('privateRegNumber')) document.getElementById('privateRegNumber').textContent = v.registration_number || 'Unregistered';
+  if (document.getElementById('privateChassisNumber')) document.getElementById('privateChassisNumber').textContent = v.chassis_number || 'Not Recorded';
+  if (document.getElementById('privateCreatedDate')) document.getElementById('privateCreatedDate').textContent = new Date(v.created_at).toLocaleString();
+  if (document.getElementById('privateUpdatedDate')) document.getElementById('privateUpdatedDate').textContent = new Date(v.updated_at).toLocaleString();
 
   // Description
-  document.getElementById('detailDescription').textContent = v.description || 'No public description recorded.';
+  if (document.getElementById('detailDescription')) document.getElementById('detailDescription').textContent = cleanDescription || 'No public description recorded.';
 
   lucide.createIcons();
 }
@@ -155,6 +174,31 @@ function switchGalleryImage(url, thumbEl) {
   if (mainImg) mainImg.src = url;
   document.querySelectorAll('#galleryThumbsStrip img').forEach(t => t.classList.remove('active'));
   if (thumbEl) thumbEl.classList.add('active');
+}
+
+async function handleDetailStatusChange(newStatus) {
+  const supabase = window.getSupabaseClient();
+  if (!supabase || !currentVehicleId) return;
+
+  try {
+    const { error } = await supabase
+      .from('vehicles')
+      .update({ status: newStatus })
+      .eq('id', currentVehicleId);
+
+    if (error) {
+      alert('Failed to update status: ' + error.message);
+    } else {
+      currentVehicle.status = newStatus;
+      const statusEl = document.getElementById('detailStatusBadge');
+      if (statusEl) {
+        statusEl.className = `status-badge ${newStatus}`;
+        statusEl.innerHTML = `<span class="status-dot"></span> <span>${newStatus}</span>`;
+      }
+    }
+  } catch (err) {
+    console.error('Error changing vehicle status:', err);
+  }
 }
 
 /* ==========================================================================
@@ -197,7 +241,7 @@ function renderPurchaseView() {
     container.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <div>
-          <h3 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: #FFFFFF;">
+          <h3 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--admin-text-main);">
             Acquisition & Cost Details
           </h3>
           <p style="font-size: 0.82rem; color: var(--admin-text-muted);">Confidential dealership purchase record</p>
@@ -211,7 +255,7 @@ function renderPurchaseView() {
       <div class="form-grid-3">
         <div class="spec-item">
           <div class="spec-label">Purchase Price</div>
-          <div class="spec-val" style="color: #60A5FA; font-size: 1.2rem; font-family: var(--font-heading);">
+          <div class="spec-val" style="color: #2563EB; font-size: 1.2rem; font-family: var(--font-heading);">
             PKR ${Number(currentPurchase.purchase_price).toLocaleString('en-PK')}
           </div>
         </div>
@@ -233,7 +277,7 @@ function renderPurchaseView() {
 
         <div class="spec-item">
           <div class="spec-label">Seller Contact</div>
-          <div class="spec-val" style="color: #34D399;">${currentPurchase.seller_phone || 'N/A'}</div>
+          <div class="spec-val" style="color: #059669;">${currentPurchase.seller_phone || 'N/A'}</div>
         </div>
 
         <div class="spec-item">
@@ -241,7 +285,7 @@ function renderPurchaseView() {
           <div class="spec-val" style="font-size: 0.82rem; color: var(--admin-text-muted);">${new Date(currentPurchase.created_at).toLocaleDateString()}</div>
         </div>
 
-        <div class="spec-item" style="grid-column: span 3; background: rgba(0,0,0,0.2);">
+        <div class="spec-item" style="grid-column: span 3; background: #F8FAFC;">
           <div class="spec-label">Purchase Notes & Conditions</div>
           <div class="spec-val" style="font-weight: 400; font-size: 0.88rem; color: var(--admin-text-secondary); line-height: 1.6;">
             ${currentPurchase.notes || 'No confidential purchase notes recorded.'}
@@ -379,12 +423,12 @@ function renderExpensesView() {
   listEl.innerHTML = currentExpenses.map(exp => `
     <tr>
       <td>
-        <span class="stock-tag" style="text-transform: capitalize; background: rgba(245, 158, 11, 0.15); color: #FBBF24;">
+        <span class="stock-tag" style="text-transform: capitalize; background: #FEF3C7; color: #D97706;">
           ${exp.expense_type}
         </span>
       </td>
       <td>
-        <span style="font-weight: 700; color: #FFFFFF;">
+        <span style="font-weight: 700; color: var(--admin-text-main);">
           PKR ${Number(exp.amount).toLocaleString('en-PK')}
         </span>
       </td>
@@ -527,13 +571,13 @@ function renderSaleView() {
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <div>
           <span class="status-badge sold"><span class="status-dot"></span> Vehicle Sold</span>
-          <h3 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: #FFFFFF; margin-top: 0.35rem;">
+          <h3 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 700; color: var(--admin-text-main); margin-top: 0.35rem;">
             Sales & Buyer Agreement
           </h3>
         </div>
         <div style="text-align: right;">
           <div style="font-size: 0.75rem; color: var(--admin-text-muted); text-transform: uppercase; font-weight: 700;">Final Sale Price</div>
-          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #34D399;">
+          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #059669;">
             PKR ${Number(currentSale.sale_price).toLocaleString('en-PK')}
           </div>
         </div>
@@ -543,7 +587,7 @@ function renderSaleView() {
         <div class="spec-item">
           <div class="spec-label">Buyer Name</div>
           <div class="spec-val">
-            <a href="customer-detail.html?id=${cust.id}" style="color: #60A5FA; text-decoration: none;">
+            <a href="customer-detail.html?id=${cust.id}" style="color: #2563EB; text-decoration: none; font-weight: 600;">
               ${cust.name || 'Unknown'} ↗
             </a>
           </div>
@@ -566,17 +610,17 @@ function renderSaleView() {
 
         <div class="spec-item">
           <div class="spec-label">Amount Received</div>
-          <div class="spec-val" style="color: #34D399;">PKR ${Number(currentSale.amount_received).toLocaleString('en-PK')}</div>
+          <div class="spec-val" style="color: #059669;">PKR ${Number(currentSale.amount_received).toLocaleString('en-PK')}</div>
         </div>
 
         <div class="spec-item">
           <div class="spec-label">Remaining Balance</div>
-          <div class="spec-val" style="color: ${remaining > 0 ? '#F87171' : '#34D399'}; font-weight: 700;">
+          <div class="spec-val" style="color: ${remaining > 0 ? '#DC2626' : '#059669'}; font-weight: 700;">
             ${remaining > 0 ? `PKR ${remaining.toLocaleString('en-PK')}` : 'Paid in Full'}
           </div>
         </div>
 
-        <div class="spec-item" style="grid-column: span 3; background: rgba(0,0,0,0.2);">
+        <div class="spec-item" style="grid-column: span 3; background: #F8FAFC;">
           <div class="spec-label">Sale Notes & Transfer Remarks</div>
           <div class="spec-val" style="font-weight: 400; font-size: 0.88rem; color: var(--admin-text-secondary); line-height: 1.6;">
             ${currentSale.notes || 'No sales remarks recorded.'}
@@ -746,7 +790,7 @@ async function handleSaleFormSubmit(e) {
 
 /* ==========================================================================
    5. FINANCIAL SUMMARY & PROFIT CALCULATION
-   ========================================================================== */
+   ========================================================================= */
 function updateFinancialSummary() {
   const purchaseValEl = document.getElementById('finPurchaseVal');
   const expensesValEl = document.getElementById('finExpensesVal');
@@ -773,9 +817,9 @@ function updateFinancialSummary() {
     if (profitStatusBanner) {
       profitStatusBanner.style.display = 'block';
       profitStatusBanner.className = 'alert-banner';
-      profitStatusBanner.style.background = 'rgba(245, 158, 11, 0.1)';
-      profitStatusBanner.style.border = '1px solid rgba(245, 158, 11, 0.3)';
-      profitStatusBanner.style.color = '#FBBF24';
+      profitStatusBanner.style.background = '#FFFBEB';
+      profitStatusBanner.style.border = '1px solid #FDE68A';
+      profitStatusBanner.style.color = '#B45309';
       profitStatusBanner.innerHTML = `
         <i data-lucide="info" style="width: 18px; height: 18px;"></i>
         <span><strong>Vehicle Not Sold Yet:</strong> Total invested acquisition and reconditioning cost stands at <strong>PKR ${totalCost.toLocaleString('en-PK')}</strong>. Profit will be realized upon sale.</span>
@@ -795,9 +839,9 @@ function updateFinancialSummary() {
     if (profitStatusBanner) {
       profitStatusBanner.style.display = 'block';
       profitStatusBanner.className = 'alert-banner';
-      profitStatusBanner.style.background = netProfit >= 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
-      profitStatusBanner.style.border = netProfit >= 0 ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)';
-      profitStatusBanner.style.color = netProfit >= 0 ? '#34D399' : '#F87171';
+      profitStatusBanner.style.background = netProfit >= 0 ? '#ECFDF5' : '#FEF2F2';
+      profitStatusBanner.style.border = netProfit >= 0 ? '1px solid #A7F3D0' : '1px solid #FECACA';
+      profitStatusBanner.style.color = netProfit >= 0 ? '#065F46' : '#991B1B';
       profitStatusBanner.innerHTML = `
         <i data-lucide="${netProfit >= 0 ? 'trending-up' : 'trending-down'}" style="width: 18px; height: 18px;"></i>
         <span><strong>Realized Dealership Margin:</strong> ${netProfit >= 0 ? 'Profitable Sale' : 'Loss Recorded'} — Net Profit of <strong>PKR ${netProfit.toLocaleString('en-PK')}</strong>.</span>
@@ -906,8 +950,8 @@ function renderDocumentsView() {
       <tr>
         <td>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <i data-lucide="file-text" style="width: 18px; height: 18px; color: #60A5FA;"></i>
-            <span style="font-weight: 600; color: #FFFFFF;">${filename}</span>
+            <i data-lucide="file-text" style="width: 18px; height: 18px; color: #2563EB;"></i>
+            <span style="font-weight: 600; color: var(--admin-text-main);">${filename}</span>
           </div>
         </td>
         <td>
@@ -985,6 +1029,7 @@ async function deleteDocument(docId, filePath) {
 
 // Global functions for inline HTML calls
 window.switchGalleryImage = switchGalleryImage;
+window.handleDetailStatusChange = handleDetailStatusChange;
 window.openPurchaseModal = openPurchaseModal;
 window.closePurchaseModal = closePurchaseModal;
 window.handlePurchaseFormSubmit = handlePurchaseFormSubmit;

@@ -17,32 +17,32 @@ async function loadDashboardMetrics() {
 
   try {
     // 1. Total vehicles
-    const { count: totalCount, error: totalErr } = await supabase
+    const { count: totalCount } = await supabase
       .from('vehicles')
       .select('*', { count: 'exact', head: true });
 
     // 2. Available vehicles
-    const { count: availableCount, error: availErr } = await supabase
+    const { count: availableCount } = await supabase
       .from('vehicles')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'available');
 
-    // 3. Reserved vehicles
-    const { count: reservedCount, error: resErr } = await supabase
-      .from('vehicles')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'reserved');
-
-    // 4. Sold vehicles
-    const { count: soldCount, error: soldErr } = await supabase
+    // 3. Sold vehicles
+    const { count: soldCount } = await supabase
       .from('vehicles')
       .select('*', { count: 'exact', head: true })
       .eq('status', 'sold');
 
-    document.getElementById('kpiTotal').textContent = totalCount !== null ? totalCount : '0';
-    document.getElementById('kpiAvailable').textContent = availableCount !== null ? availableCount : '0';
-    document.getElementById('kpiReserved').textContent = reservedCount !== null ? reservedCount : '0';
-    document.getElementById('kpiSold').textContent = soldCount !== null ? soldCount : '0';
+    // 4. Cancelled vehicles
+    const { count: cancelledCount } = await supabase
+      .from('vehicles')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'cancelled');
+
+    if (document.getElementById('kpiTotal')) document.getElementById('kpiTotal').textContent = totalCount !== null ? totalCount : '0';
+    if (document.getElementById('kpiAvailable')) document.getElementById('kpiAvailable').textContent = availableCount !== null ? availableCount : '0';
+    if (document.getElementById('kpiSold')) document.getElementById('kpiSold').textContent = soldCount !== null ? soldCount : '0';
+    if (document.getElementById('kpiCancelled')) document.getElementById('kpiCancelled').textContent = cancelledCount !== null ? cancelledCount : '0';
 
   } catch (err) {
     console.error('Error fetching KPI metrics:', err);
@@ -67,6 +67,8 @@ async function loadRecentVehicles() {
         variant,
         year,
         mileage,
+        condition,
+        description,
         price,
         status,
         created_at,
@@ -80,7 +82,7 @@ async function loadRecentVehicles() {
 
     if (error) {
       console.error('Error fetching recent vehicles:', error);
-      tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #F87171; padding: 2rem;">Failed to load recent vehicles: ${error.message}</td></tr>`;
+      if (tableBody) tableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #DC2626; padding: 2rem;">Failed to load recent inventory: ${error.message}</td></tr>`;
       return;
     }
 
@@ -95,8 +97,15 @@ async function loadRecentVehicles() {
     tableBody.innerHTML = vehicles.map(v => {
       const primaryImgObj = v.vehicle_images?.find(img => img.is_primary) || v.vehicle_images?.[0];
       const imgUrl = primaryImgObj ? primaryImgObj.image_url : '../assets/cars/fortuner_legender.jpg';
-      const formattedPrice = Number(v.price).toLocaleString('en-PK');
-      const formattedDate = new Date(v.created_at).toLocaleDateString();
+      const formattedPrice = Number.isInteger(Number(v.price)) ? Number(v.price).toLocaleString('en-PK') : Number(v.price).toFixed(2);
+      
+      let importYearBadge = '';
+      const importMatch = (v.description || '').match(/\[Import:\s*(\d{4})\]/i);
+      if (importMatch) {
+        importYearBadge = `<span style="display:inline-block; font-size:0.7rem; background:#FEE2E2; color:#DC2626; font-weight:600; padding:1px 6px; border-radius:4px; margin-top:2px;">Import: ${importMatch[1]}</span>`;
+      }
+
+      const conditionDisplay = v.condition ? `<div style="font-size:0.78rem; color:var(--admin-text-secondary);">${v.condition}</div>` : '<div style="font-size:0.75rem; color:var(--admin-text-muted);">Standard</div>';
 
       return `
         <tr>
@@ -109,7 +118,10 @@ async function loadRecentVehicles() {
               </div>
             </div>
           </td>
-          <td><span class="stock-tag">${v.stock_number}</span></td>
+          <td>
+            ${conditionDisplay}
+            ${importYearBadge}
+          </td>
           <td>${v.mileage ? v.mileage.toLocaleString() + ' km' : 'N/A'}</td>
           <td><span class="price-text">PKR ${formattedPrice}</span></td>
           <td>

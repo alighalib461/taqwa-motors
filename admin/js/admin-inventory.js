@@ -104,7 +104,7 @@ async function loadInventory() {
   const countBadge = document.getElementById('inventoryCountBadge');
 
   if (tableBody) {
-    tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--admin-text-muted); padding: 3rem;">Loading inventory records...</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--admin-text-muted); padding: 3rem;">Loading inventory records...</td></tr>`;
   }
 
   try {
@@ -121,6 +121,8 @@ async function loadInventory() {
         fuel_type,
         transmission,
         color,
+        condition,
+        description,
         price,
         status,
         featured,
@@ -135,10 +137,10 @@ async function loadInventory() {
       `)
       .order('created_at', { ascending: false });
 
-    // Apply Search (Stock number, Make, Model, Registration, Chassis)
+    // Apply Search (Make, Model, Registration, Chassis)
     if (currentFilters.search) {
       const q = currentFilters.search;
-      query = query.or(`stock_number.ilike.%${q}%,make.ilike.%${q}%,model.ilike.%${q}%,registration_number.ilike.%${q}%,chassis_number.ilike.%${q}%`);
+      query = query.or(`make.ilike.%${q}%,model.ilike.%${q}%,registration_number.ilike.%${q}%,chassis_number.ilike.%${q}%`);
     }
 
     // Apply specific filters
@@ -172,7 +174,7 @@ async function loadInventory() {
     if (error) {
       console.error('Inventory fetch error:', error);
       if (tableBody) {
-        tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #F87171; padding: 2rem;">Error: ${error.message}</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #DC2626; padding: 2rem;">Error: ${error.message}</td></tr>`;
       }
       return;
     }
@@ -202,8 +204,19 @@ function renderInventoryTable(vehicles) {
   tableBody.innerHTML = vehicles.map(v => {
     const primaryImgObj = v.vehicle_images?.find(img => img.is_primary) || v.vehicle_images?.[0];
     const imgUrl = primaryImgObj ? primaryImgObj.image_url : '../assets/cars/fortuner_legender.jpg';
-    const formattedPrice = Number(v.price).toLocaleString('en-PK');
+    
+    // Exact manual price formatting without rounding
+    const formattedPrice = Number.isInteger(Number(v.price)) ? Number(v.price).toLocaleString('en-PK') : Number(v.price).toFixed(2);
     const regDisplay = v.registration_number || '<span style="color: var(--admin-text-muted); font-size: 0.75rem;">Unregistered</span>';
+
+    // Parse Year of Import from metadata tag if present
+    let importYearBadge = '';
+    const importMatch = (v.description || '').match(/\[Import:\s*(\d{4})\]/i);
+    if (importMatch) {
+      importYearBadge = `<span style="display:inline-block; font-size:0.7rem; background:#FEE2E2; color:#DC2626; font-weight:600; padding:1px 6px; border-radius:4px; margin-top:2px;">Import: ${importMatch[1]}</span>`;
+    }
+
+    const conditionDisplay = v.condition ? `<div style="font-size:0.78rem; color:var(--admin-text-secondary);">${v.condition}</div>` : '<div style="font-size:0.75rem; color:var(--admin-text-muted);">Standard</div>';
 
     return `
       <tr>
@@ -213,25 +226,27 @@ function renderInventoryTable(vehicles) {
             <div>
               <div class="car-title-primary">
                 ${v.year} ${v.make} ${v.model}
-                ${v.featured ? '<span style="font-size: 0.65rem; background: rgba(245,158,11,0.2); color:#FBBF24; padding:1px 5px; border-radius:4px; margin-left:4px; font-weight:700;">★ Featured</span>' : ''}
+                ${v.featured ? '<span style="font-size: 0.65rem; background: #FEE2E2; color:#DC2626; padding:1px 5px; border-radius:4px; margin-left:4px; font-weight:700;">★ Featured</span>' : ''}
               </div>
               <div class="car-variant-sub">${v.variant || 'Standard'} • ${v.fuel_type || 'Petrol'}</div>
             </div>
           </div>
         </td>
-        <td><span class="stock-tag">${v.stock_number}</span></td>
         <td>
-          <div style="font-size: 0.85rem; font-weight: 600; color: #FFFFFF;">${regDisplay}</div>
+          ${conditionDisplay}
+          ${importYearBadge}
+        </td>
+        <td>
+          <div style="font-size: 0.85rem; font-weight: 600; color: var(--admin-text-main);">${regDisplay}</div>
           <div style="font-size: 0.72rem; color: var(--admin-text-muted); font-family: var(--font-mono);">${v.chassis_number || 'No Chassis'}</div>
         </td>
         <td>${v.mileage ? v.mileage.toLocaleString() + ' km' : 'N/A'}</td>
         <td><span class="price-text">PKR ${formattedPrice}</span></td>
         <td>
-          <select class="admin-select" style="padding: 0.25rem 0.5rem; font-size: 0.78rem; width: auto;" onchange="handleStatusChange('${v.id}', this.value)">
+          <select class="admin-select" style="padding: 0.25rem 0.5rem; font-size: 0.78rem; width: auto; font-weight:600;" onchange="handleStatusChange('${v.id}', this.value)">
             <option value="available" ${v.status === 'available' ? 'selected' : ''}>Available</option>
-            <option value="reserved" ${v.status === 'reserved' ? 'selected' : ''}>Reserved</option>
             <option value="sold" ${v.status === 'sold' ? 'selected' : ''}>Sold</option>
-            <option value="hidden" ${v.status === 'hidden' ? 'selected' : ''}>Hidden / Archive</option>
+            <option value="cancelled" ${v.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
           </select>
         </td>
         <td>
@@ -242,8 +257,8 @@ function renderInventoryTable(vehicles) {
             <a href="inventory-edit.html?id=${v.id}" class="action-btn-icon" title="Edit Vehicle">
               <i data-lucide="edit-3" style="width: 16px; height: 16px;"></i>
             </a>
-            <button type="button" class="action-btn-icon delete" title="Archive / Delete" onclick="confirmDeleteVehicle('${v.id}', '${v.stock_number}', '${v.make} ${v.model}')">
-              <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+            <button type="button" class="action-btn-icon delete" title="Cancel / Archive" onclick="confirmCancelVehicle('${v.id}', '${v.make} ${v.model}')">
+              <i data-lucide="slash" style="width: 16px; height: 16px;"></i>
             </button>
           </div>
         </td>
@@ -269,15 +284,16 @@ async function handleStatusChange(vehicleId, newStatus) {
       loadInventory();
     } else {
       console.log(`Vehicle ${vehicleId} status updated to ${newStatus}`);
+      loadInventory();
     }
   } catch (err) {
     console.error('Error changing vehicle status:', err);
   }
 }
 
-async function confirmDeleteVehicle(vehicleId, stockNumber, title) {
-  const shouldArchive = confirm(`Are you sure you want to delete or archive vehicle [${stockNumber}] ${title}?\n\nClick OK to permanently remove, or Cancel to keep.`);
-  if (!shouldArchive) return;
+async function confirmCancelVehicle(vehicleId, title) {
+  const shouldCancel = confirm(`Mark vehicle "${title}" as Cancelled?\n\nThis updates the status without deleting historical records.`);
+  if (!shouldCancel) return;
 
   const supabase = window.getSupabaseClient();
   if (!supabase) return;
@@ -285,19 +301,18 @@ async function confirmDeleteVehicle(vehicleId, stockNumber, title) {
   try {
     const { error } = await supabase
       .from('vehicles')
-      .delete()
+      .update({ status: 'cancelled' })
       .eq('id', vehicleId);
 
     if (error) {
-      alert('Failed to delete vehicle: ' + error.message);
+      alert('Failed to update status: ' + error.message);
     } else {
-      alert(`Vehicle ${stockNumber} removed successfully.`);
       loadInventory();
     }
   } catch (err) {
-    console.error('Error deleting vehicle:', err);
+    console.error('Error setting vehicle status to cancelled:', err);
   }
 }
 
 window.handleStatusChange = handleStatusChange;
-window.confirmDeleteVehicle = confirmDeleteVehicle;
+window.confirmCancelVehicle = confirmCancelVehicle;

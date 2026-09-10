@@ -38,7 +38,7 @@
     "description": "Premium car dealership in Rawalpindi offering certified used cars, imported Japanese vehicles, and transparent automotive trading.",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "H2X7+VP4 Range Road, Chowk, Shalley Valley",
+      "streetAddress": "Range Road, Chowk, Shalley Valley",
       "addressLocality": "Rawalpindi",
       "postalCode": "46000",
       "addressCountry": "PK"
@@ -50,7 +50,7 @@
     },
     "telephone": "+92-333-5406173",
     "openingHours": "Mo-Su 08:00-22:00",
-    "priceRange": "PKR 2,500,000 - PKR 100,000,000"
+    "priceRange": "PKR 2,500 - PKR 100,000,000"
   }
   </script>
 </head>
@@ -76,8 +76,8 @@
       <ul class="nav-menu" id="navMenu">
         <li><a href="#home" class="nav-link active">Home</a></li>
         <li><a href="#inventory" class="nav-link">Inventory</a></li>
+        <li><a href="#trust-pillars" class="nav-link">Why Choose Us</a></li>
         <li><a href="#services" class="nav-link">Services</a></li>
-        <li><a href="#why-us" class="nav-link">Why Choose Us</a></li>
         <li><a href="#calculator" class="nav-link">EMI Calculator</a></li>
         <li><a href="#testimonials" class="nav-link">Reviews</a></li>
         <li><a href="#about" class="nav-link">About</a></li>
@@ -103,7 +103,7 @@
           <span class="nav-whatsapp-text">WhatsApp</span>
         </a>
 
-        <!-- Admin Portal Top Link (Prominent & Accessible on all devices) -->
+        <!-- Admin Portal Top Link -->
         <a href="admin/login.html" class="btn btn-outline-red btn-sm nav-admin-btn" title="Dealership Staff & Admin Portal" aria-label="Admin Portal">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           <span class="nav-admin-text">Admin</span>
@@ -120,7 +120,7 @@
        2. HERO SECTION WITH BACKGROUND VIDEO
        ======================================================================== -->
   <section class="hero-section" id="home">
-    <!-- Autoplay, Muted, Loop, Playsinline Background Video -->
+    <!-- Background Video -->
     <div class="hero-video-container">
       <video class="hero-video" autoplay muted loop playsinline poster="assets/cars/fortuner_legender.jpg">
         <source src="Silk_fabric_floating_around_SUV_202609040652.mp4" type="video/mp4">
@@ -128,7 +128,7 @@
       </video>
     </div>
 
-    <!-- Subtle Luxury Dark Overlay for Pristine Readability -->
+    <!-- Luxury Overlay -->
     <div class="hero-overlay"></div>
     <div class="hero-radial-glow"></div>
 
@@ -153,11 +153,11 @@
       <div class="hero-cta-group reveal-on-scroll">
         <a href="#inventory" class="btn btn-primary btn-lg glow-hover">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
-          Explore Our Cars
+          Explore Inventory
         </a>
         <a href="https://wa.me/923335406173?text=Assalam-o-Alaikum%20Taqwa%20Motors,%20I%20am%20looking%20for%20a%20car%20in%20Rawalpindi.%20Please%20guide%20me." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-lg glow-hover">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-          WhatsApp Us (0333-5406173)
+          WhatsApp (0333-5406173)
         </a>
       </div>
 
@@ -167,7 +167,7 @@
           <div class="search-field">
             <label for="heroMakeSelect">Make / Brand</label>
             <select id="heroMakeSelect">
-              <option value="all">All Makes (Toyota, Honda, etc.)</option>
+              <option value="all">All Makes</option>
               <option value="Toyota">Toyota</option>
               <option value="Honda">Honda</option>
               <option value="KIA">KIA</option>
@@ -206,7 +206,7 @@
         </form>
       </div>
 
-      <!-- Trust Metrics Counters Grid -->
+      <!-- Trust Metrics Counters Grid (REQUIREMENT 15: 15+, 2500+, 100%, 4.9 IN TAQWA RED) -->
       <div class="trust-stats-grid reveal-on-scroll">
         <div class="trust-stat-card">
           <div class="stat-number">15+</div>
@@ -229,108 +229,26 @@
   </section>
 
   <!-- ========================================================================
-       3. "DRIVEN BY TRUST" / CORE PHILOSOPHY
+       3. VEHICLE INVENTORY HUB (REQUIREMENT 16: IMMEDIATELY AFTER HERO)
+       Clean White Background inspired by Sehgal Motorsports visual reference
        ======================================================================== -->
-  <section class="section section-dark-surface" id="trust-pillars">
+  <section class="section section-inventory-hub" id="inventory">
     <div class="container">
       <div class="section-header reveal-on-scroll">
-        <span class="section-tag tag-gradient">The Taqwa Motors Guarantee</span>
-        <h2 class="section-title">Your Next Car Should Come With <span class="text-gradient">Total Confidence</span></h2>
+        <span class="section-tag tag-blue">Live Showroom Inventory</span>
+        <h2 class="section-title">Explore Verified <span class="text-red">Vehicles</span></h2>
         <p class="section-subtitle">
-          At Taqwa Motors, integrity is not just a slogan — it is our founding principle. We remove the uncertainty of buying a used or imported vehicle through 100% transparent procedures.
-        </p>
-      </div>
-
-      <div class="trust-pillars-grid">
-        <div class="pillar-card reveal-on-scroll">
-          <div class="pillar-icon-box">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          </div>
-          <h3 class="pillar-title">100% Verified Auction Sheets</h3>
-          <p class="pillar-desc">
-            We provide genuine Japanese auction sheets verifiable live on official databases. Zero meter tampering, zero hidden accident history.
-          </p>
-        </div>
-
-        <div class="pillar-card reveal-on-scroll">
-          <div class="pillar-icon-box">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          </div>
-          <h3 class="pillar-title">150-Point Technical Check</h3>
-          <p class="pillar-desc">
-            Every vehicle undergoes computer diagnostics, paint depth meter verification, transmission load tests, and suspension health checks.
-          </p>
-        </div>
-
-        <div class="pillar-card reveal-on-scroll">
-          <div class="pillar-icon-box">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </div>
-          <h3 class="pillar-title">Clear Biometric & Excise Transfer</h3>
-          <p class="pillar-desc">
-            Complete legal documentation verification for Islamabad, Rawalpindi, and Punjab. Immediate biometric transfer and clear token tax records.
-          </p>
-        </div>
-
-        <div class="pillar-card reveal-on-scroll">
-          <div class="pillar-icon-box">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-          </div>
-          <h3 class="pillar-title">Fair Market Pricing</h3>
-          <p class="pillar-desc">
-            Direct dealings without artificial dealer markups or hidden commissions. What you see is transparent, fair, and backed by quality.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================
-       4. FEATURED CARS SHOWCASE
-       ======================================================================== -->
-  <section class="section" id="featured">
-    <div class="container">
-      <div class="section-header reveal-on-scroll">
-        <span class="section-tag">Handpicked Inventory</span>
-        <h2 class="section-title">Featured Showroom <span class="text-red">Arrivals</span></h2>
-        <p class="section-subtitle">
-          Explore our premier selection of immaculate SUVs, luxury executive sedans, and high-efficiency hybrid vehicles ready for immediate delivery.
+          Browse our certified Japanese imports and quality local vehicles parked at our Range Road Chowk showroom.
         </p>
       </div>
 
       <!-- Category Filter Tabs -->
       <div class="filter-tabs-wrapper reveal-on-scroll">
-        <button class="tab-btn featured-tab-btn active" data-category="all">All Featured</button>
+        <button class="tab-btn featured-tab-btn active" data-category="all">All Stock</button>
         <button class="tab-btn featured-tab-btn" data-category="suv">Luxury SUVs</button>
         <button class="tab-btn featured-tab-btn" data-category="sedan">Executive Sedans</button>
         <button class="tab-btn featured-tab-btn" data-category="hybrid">Hybrids & JDM</button>
         <button class="tab-btn featured-tab-btn" data-category="4x4">4x4 & Off-Road</button>
-      </div>
-
-      <!-- Featured Grid Container -->
-      <div class="cars-grid" id="featuredCarsGrid">
-        <!-- Rendered dynamically by js/app.js -->
-      </div>
-
-      <div class="text-center" style="margin-top: 48px;">
-        <a href="#inventory" class="btn btn-outline btn-lg glow-hover">
-          View All Inventory & Filter Cars →
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================
-       5. FULL DEDICATED INVENTORY HUB
-       ======================================================================== -->
-  <section class="section section-dark-surface" id="inventory">
-    <div class="container">
-      <div class="section-header reveal-on-scroll">
-        <span class="section-tag tag-blue">Live Showroom Stock</span>
-        <h2 class="section-title">Explore Our Complete <span class="text-gradient">Vehicle Inventory</span></h2>
-        <p class="section-subtitle">
-          Filter by make, model, budget, transmission, or registration city. Every vehicle is thoroughly inspected and parked at our Range Road Chowk showroom.
-        </p>
       </div>
 
       <!-- Inventory Layout (Sidebar Filters + Results Grid) -->
@@ -339,7 +257,7 @@
         <aside class="inventory-sidebar reveal-on-scroll">
           <div class="sidebar-title-row">
             <h3 class="sidebar-title">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
               Filter Stock
             </h3>
             <button class="reset-filters-btn" onclick="window.resetAllFilters()">Reset All</button>
@@ -376,12 +294,12 @@
           <div class="filter-group">
             <div class="filter-group-label">
               <span>Max Budget</span>
-              <span id="sidebarPriceVal" style="color: #FF6B6B; font-weight:800;">PKR 10 Crore</span>
+              <span id="sidebarPriceVal" style="color: var(--primary-red); font-weight:800;">PKR 10 Crore</span>
             </div>
             <div class="price-slider-wrapper">
-              <input type="range" class="price-range-slider" id="sidebarPriceRange" min="2000000" max="100000000" step="1000000" value="100000000">
+              <input type="range" class="price-range-slider" id="sidebarPriceRange" min="2000" max="100000000" step="100000" value="100000000">
               <div class="price-values-row">
-                <span>20 Lacs</span>
+                <span>Any</span>
                 <span>10 Crore</span>
               </div>
             </div>
@@ -439,11 +357,11 @@
           <div class="inventory-top-bar reveal-on-scroll">
             <div class="inventory-search-input-wrapper">
               <span class="inventory-search-icon">🔍</span>
-              <input type="text" id="inventorySearchInput" class="inventory-search-input" placeholder="Search by model, make, or specs...">
+              <input type="text" id="inventorySearchInput" class="inventory-search-input" placeholder="Search by model, make, or condition...">
             </div>
 
             <div class="inventory-sort-controls">
-              <span id="inventoryResultsCount" style="font-size: 0.85rem; color: #94A3B8; font-weight:700;">Showing 12 Cars</span>
+              <span id="inventoryResultsCount" style="font-size: 0.85rem; color: var(--text-dark-muted); font-weight:700;">Showing Cars</span>
 
               <select id="inventorySortSelect" class="sort-select">
                 <option value="featured">Sort by: Featured</option>
@@ -455,9 +373,9 @@
             </div>
           </div>
 
-          <!-- Dynamic Inventory Grid -->
+          <!-- Live Inventory Grid (2-Column on Mobile) -->
           <div class="cars-grid" id="inventoryCarsGrid">
-            <!-- Populated dynamically by js/app.js -->
+            <!-- Rendered dynamically by js/app.js -->
           </div>
         </div>
       </div>
@@ -465,15 +383,91 @@
   </section>
 
   <!-- ========================================================================
-       6. CAR FINANCING & EMI LOAN CALCULATOR
+       4. "DRIVEN BY TRUST" / CORE PHILOSOPHY
        ======================================================================== -->
-  <section class="section" id="calculator">
+  <section class="section section-light" id="trust-pillars">
     <div class="container">
       <div class="section-header reveal-on-scroll">
-        <span class="section-tag tag-gradient">Smart Auto Financing</span>
-        <h2 class="section-title">Car Financing & <span class="text-red">EMI Calculator</span></h2>
+        <span class="section-tag tag-dark">The Taqwa Motors Guarantee</span>
+        <h2 class="section-title">Your Next Car Should Come With <span class="text-red">Total Confidence</span></h2>
         <p class="section-subtitle">
-          Plan your monthly budget with our real-time auto loan calculator. We collaborate with Pakistan's premier Islamic and commercial banks for rapid financing approvals.
+          At Taqwa Motors, integrity is our founding principle. We remove the uncertainty of buying a used or imported vehicle through 100% transparent procedures.
+        </p>
+      </div>
+
+      <div class="trust-pillars-grid">
+        <div class="pillar-card reveal-on-scroll">
+          <div class="pillar-icon-box">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <h3 class="pillar-title">100% Verified Auction Sheets</h3>
+          <p class="pillar-desc">
+            We provide genuine Japanese auction sheets verifiable live on official databases. Zero meter tampering, zero hidden accident history.
+          </p>
+        </div>
+
+        <div class="pillar-card reveal-on-scroll">
+          <div class="pillar-icon-box">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <h3 class="pillar-title">150-Point Technical Check</h3>
+          <p class="pillar-desc">
+            Every vehicle undergoes computer diagnostics, paint depth meter verification, transmission load tests, and suspension health checks.
+          </p>
+        </div>
+
+        <div class="pillar-card reveal-on-scroll">
+          <div class="pillar-icon-box">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <h3 class="pillar-title">Clear Biometric & Excise Transfer</h3>
+          <p class="pillar-desc">
+            Complete legal documentation verification for Islamabad, Rawalpindi, and Punjab. Immediate biometric transfer and clear token tax records.
+          </p>
+        </div>
+
+        <div class="pillar-card reveal-on-scroll">
+          <div class="pillar-icon-box">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
+          <h3 class="pillar-title">Fair Market Pricing</h3>
+          <p class="pillar-desc">
+            Direct dealings without artificial dealer markups or hidden commissions. What you see is transparent, fair, and backed by verified quality.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       5. DEALERSHIP SERVICES
+       ======================================================================== -->
+  <section class="section" id="services">
+    <div class="container">
+      <div class="section-header reveal-on-scroll">
+        <span class="section-tag">Comprehensive Automotive Services</span>
+        <h2 class="section-title">End-to-End <span class="text-red">Dealership Solutions</span></h2>
+        <p class="section-subtitle">
+          From Japanese auction vehicle sourcing to computerized inspection, trade-in valuation, and seamless excise biometric transfers.
+        </p>
+      </div>
+
+      <div class="trust-pillars-grid" id="servicesGrid">
+        <!-- Rendered dynamically from js/data.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       6. CAR FINANCING & EMI LOAN CALCULATOR
+       ======================================================================== -->
+  <section class="section section-light" id="calculator">
+    <div class="container">
+      <div class="section-header reveal-on-scroll">
+        <span class="section-tag tag-blue">Car Financing Assistance</span>
+        <h2 class="section-title">Interactive EMI <span class="text-red">Loan Calculator</span></h2>
+        <p class="section-subtitle">
+          Estimate your monthly car installment with leading Pakistani Islamic & commercial banks in seconds.
         </p>
       </div>
 
@@ -485,7 +479,7 @@
             <div class="calc-control-group">
               <div class="calc-label-row">
                 <span class="calc-label-text">Vehicle Price</span>
-                <span class="calc-value-display" id="calcPriceVal" style="color:#FF6B6B;">PKR 89.5 Lacs</span>
+                <span class="calc-value-display" id="calcPriceVal">PKR 89.50 Lacs</span>
               </div>
               <input type="range" class="calc-slider" id="calcPriceSlider" min="2000000" max="60000000" step="500000" value="8950000">
             </div>
@@ -493,7 +487,7 @@
             <!-- Down Payment Slider -->
             <div class="calc-control-group">
               <div class="calc-label-row">
-                <span class="calc-label-text">Down Payment (%)</span>
+                <span class="calc-label-text">Down Payment / Advance</span>
                 <span class="calc-value-display" id="calcDownPaymentVal">30% (PKR 26.85 Lacs)</span>
               </div>
               <input type="range" class="calc-slider" id="calcDownPaymentSlider" min="15" max="70" step="5" value="30">
@@ -553,26 +547,7 @@
   </section>
 
   <!-- ========================================================================
-       7. DEALERSHIP SERVICES
-       ======================================================================== -->
-  <section class="section section-dark-surface" id="services">
-    <div class="container">
-      <div class="section-header reveal-on-scroll">
-        <span class="section-tag">Comprehensive Automotive Services</span>
-        <h2 class="section-title">End-to-End <span class="text-gradient">Dealership Solutions</span></h2>
-        <p class="section-subtitle">
-          From vehicle sourcing in Japanese auctions to computerized inspection, trade-in valuation, and seamless excise biometric transfers.
-        </p>
-      </div>
-
-      <div class="trust-pillars-grid" id="servicesGrid">
-        <!-- Rendered dynamically from js/data.js -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================
-       8. WHY CHOOSE TAQWA MOTORS & ABOUT
+       7. WHY CHOOSE TAQWA MOTORS & ABOUT
        ======================================================================== -->
   <section class="section" id="why-us">
     <div class="container">
@@ -580,34 +555,34 @@
         <!-- Left Col: About Philosophy -->
         <div class="contact-info-card reveal-on-scroll" id="about">
           <div>
-            <span class="section-tag tag-gradient">Brand Heritage</span>
-            <h2 style="font-size: 2.2rem; color: #FFFFFF; margin-bottom: 16px;">
+            <span class="section-tag tag-dark">Brand Heritage</span>
+            <h2 style="font-size: 2.1rem; color: var(--text-dark); margin-bottom: 14px;">
               Driven by <span class="text-red">Taqwa</span> & Integrity
             </h2>
-            <p style="color: #CBD5E1; font-size: 1rem; line-height: 1.7; margin-bottom: 16px;">
+            <p style="color: var(--text-dark-secondary); font-size: 0.98rem; line-height: 1.7; margin-bottom: 14px;">
               The name <strong>“Taqwa”</strong> embodies our commitment to God-consciousness, truthful dealing, and unyielding honesty in every transaction. In an automotive market often clouded with mistrust, Taqwa Motors was founded in Rawalpindi with a clear mission: <em>to make car buying entirely transparent, reliable, and respectful.</em>
             </p>
-            <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
-              Whether you are acquiring a luxury Japanese import or upgrading your family sedan, our experienced team provides verified documentation, unbiased vehicle condition appraisals, and professional post-sale documentation support.
+            <p style="color: var(--text-dark-muted); font-size: 0.92rem; line-height: 1.6;">
+              Whether you are acquiring a luxury Japanese import or upgrading your family vehicle, our experienced team provides verified documentation, unbiased vehicle condition appraisals, and professional post-sale documentation support.
             </p>
           </div>
 
           <div class="about-stats-grid">
-            <div style="background: rgba(7,10,18,0.7); padding: 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
-              <h4 style="color:#FF6B6B; font-size: 1.25rem; font-weight:800; margin-bottom: 4px;">100%</h4>
-              <p style="font-size: 0.8rem; color:#94A3B8;">Guaranteed Genuine Paint & Mileage Check</p>
+            <div style="background: var(--bg-light); padding: 14px; border-radius: 8px; border: 1px solid var(--border-light);">
+              <h4 style="color:var(--primary-red); font-size: 1.2rem; font-weight:800; margin-bottom: 2px;">100%</h4>
+              <p style="font-size: 0.8rem; color:var(--text-dark-muted);">Guaranteed Genuine Paint & Mileage Check</p>
             </div>
-            <div style="background: rgba(7,10,18,0.7); padding: 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);">
-              <h4 style="color:#60A5FA; font-size: 1.25rem; font-weight:800; margin-bottom: 4px;">24hr</h4>
-              <p style="font-size: 0.8rem; color:#94A3B8;">Fast Biometric & Legal Transfer Support</p>
+            <div style="background: var(--bg-light); padding: 14px; border-radius: 8px; border: 1px solid var(--border-light);">
+              <h4 style="color:var(--brand-blue-accent); font-size: 1.2rem; font-weight:800; margin-bottom: 2px;">24hr</h4>
+              <p style="font-size: 0.8rem; color:var(--text-dark-muted);">Fast Biometric & Legal Transfer Support</p>
             </div>
           </div>
         </div>
 
         <!-- Right Col: Customer Benefits List -->
         <div class="contact-info-card reveal-on-scroll">
-          <h3 style="font-size: 1.6rem; color: #FFFFFF; margin-bottom: 20px;">
-            Why Pakistan Trusts <span class="text-gradient">Taqwa Motors</span>
+          <h3 style="font-size: 1.5rem; color: var(--text-dark); margin-bottom: 18px;">
+            Why Pakistan Trusts <span class="text-red">Taqwa Motors</span>
           </h3>
 
           <div class="info-item">
@@ -629,7 +604,7 @@
           <div class="info-item">
             <div class="info-icon-box">✓</div>
             <div class="info-content">
-              <h4>Instant Trade-In & Market Cash Buyout</h4>
+              <h4>Instant Trade-In & Market Valuation</h4>
               <p>Sell your existing car within minutes at fair market rates with instant bank transfer payment.</p>
             </div>
           </div>
@@ -647,13 +622,13 @@
   </section>
 
   <!-- ========================================================================
-       9. VERIFIED CUSTOMER TESTIMONIALS
+       8. VERIFIED CUSTOMER TESTIMONIALS
        ======================================================================== -->
-  <section class="section section-dark-surface" id="testimonials">
+  <section class="section section-light" id="testimonials">
     <div class="container">
       <div class="section-header reveal-on-scroll">
         <span class="section-tag tag-blue">Customer Experiences</span>
-        <h2 class="section-title">What Our <span class="text-gradient">Car Buyers Say</span></h2>
+        <h2 class="section-title">What Our <span class="text-red">Car Buyers Say</span></h2>
         <p class="section-subtitle">
           Real stories from satisfied car owners across Rawalpindi, Islamabad, and nationwide who experienced the Taqwa Motors difference.
         </p>
@@ -666,7 +641,7 @@
   </section>
 
   <!-- ========================================================================
-       10. FREQUENTLY ASKED QUESTIONS (FAQS)
+       9. FREQUENTLY ASKED QUESTIONS (FAQS)
        ======================================================================== -->
   <section class="section" id="faqs">
     <div class="container" style="max-width: 900px;">
@@ -685,13 +660,13 @@
   </section>
 
   <!-- ========================================================================
-       11. CONTACT & SHOWROOM LOCATION
+       10. CONTACT & SHOWROOM LOCATION (REQUIREMENT 17: ACCURATE LOCATION & MAP)
        ======================================================================== -->
-  <section class="section section-dark-surface" id="contact">
+  <section class="section section-light" id="contact">
     <div class="container">
       <div class="section-header reveal-on-scroll">
-        <span class="section-tag tag-gradient">Visit Showroom</span>
-        <h2 class="section-title">Connect With <span class="text-gradient">Taqwa Motors</span></h2>
+        <span class="section-tag tag-dark">Visit Showroom</span>
+        <h2 class="section-title">Connect With <span class="text-red">Taqwa Motors</span></h2>
         <p class="section-subtitle">
           Visit our premier showroom at Range Road Chowk, Rawalpindi, or reach out directly on WhatsApp for instant assistance.
         </p>
@@ -706,9 +681,9 @@
             </div>
             <div class="info-content">
               <h4>Showroom Address</h4>
-              <p>H2X7+VP4 Range Road, Chowk, Shalley Valley, Rawalpindi, 46000, Pakistan</p>
-              <a href="https://maps.google.com/?q=H2X7+VP4+Rawalpindi" target="_blank" rel="noopener noreferrer" style="color: #60A5FA; font-size: 0.85rem; font-weight:700; display:inline-block; margin-top:4px;">
-                Get Directions on Google Maps →
+              <p>Taqwa Motors, Range Road, Chowk, Shalley Valley, Rawalpindi 46000, Pakistan</p>
+              <a href="https://maps.app.goo.gl/vJhtE2vLmomiwnxz7?g_st=ac" target="_blank" rel="noopener noreferrer" style="color: var(--primary-red); font-size: 0.88rem; font-weight:700; display:inline-flex; align-items:center; gap:4px; margin-top:6px;">
+                <span>Get Directions on Google Maps</span> →
               </a>
             </div>
           </div>
@@ -719,8 +694,8 @@
             </div>
             <div class="info-content">
               <h4>Phone & WhatsApp</h4>
-              <p><strong style="color:#FFFFFF; font-size:1.1rem;">0333-5406173</strong></p>
-              <p style="font-size:0.85rem; color:#94A3B8;">Sales & Consultation Available 7 Days a Week</p>
+              <p><strong style="color:var(--text-dark); font-size:1.1rem;">0333-5406173</strong></p>
+              <p style="font-size:0.85rem; color:var(--text-dark-muted);">Sales & Consultation Available 7 Days a Week</p>
             </div>
           </div>
 
@@ -730,15 +705,15 @@
             </div>
             <div class="info-content">
               <h4>Business Showroom Hours</h4>
-              <p><strong style="color:#34D399;">8:00 AM – 10:00 PM</strong> (Monday – Sunday)</p>
-              <p style="font-size:0.85rem; color:#94A3B8;">Walk-ins & VIP Appointments Welcome</p>
+              <p><strong style="color:#059669;">8:00 AM – 10:00 PM</strong> (Monday – Sunday)</p>
+              <p style="font-size:0.85rem; color:var(--text-dark-muted);">Walk-ins & VIP Appointments Welcome</p>
             </div>
           </div>
 
           <!-- Interactive Map Container -->
           <div class="map-embed-wrapper">
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13289.432650059902!2d73.0182!3d33.5854!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDM1JzA3LjQiTiA3M8KwMDEnMDUuNSJF!5e0!3m2!1sen!2s!4v1680000000000!5m2!1sen!2s" 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3322.039648937989!2d73.0152528!3d33.5854041!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df93892dc479b1%3A0xe97950c95029e083!2sTaqwa%20Motors!5e0!3m2!1sen!2spk!4v1710000000000!5m2!1sen!2spk" 
               allowfullscreen="" 
               loading="lazy" 
               referrerpolicy="no-referrer-when-downgrade"
@@ -800,7 +775,7 @@
   </section>
 
   <!-- ========================================================================
-       12. PREMIUM FOOTER
+       11. PREMIUM FOOTER
        ======================================================================== -->
   <footer class="footer">
     <div class="container">
@@ -808,11 +783,11 @@
         <!-- Col 1: Brand Info -->
         <div class="footer-brand-col">
           <a href="#home" class="brand-logo-link" style="margin-bottom: 14px;">
-            <div class="brand-logo-wrapper" style="width: 46px; height: 46px;">
+            <div class="brand-logo-wrapper" style="width: 44px; height: 44px;">
               <img src="assets/logo/taqwa-logo.png" alt="Taqwa Motors Logo" class="brand-logo-img">
             </div>
             <div class="brand-text-block">
-              <span class="brand-name" style="font-size: 1.3rem;">TAQWA <span class="red-accent">MOTORS</span></span>
+              <span class="brand-name" style="font-size: 1.25rem; color: #FFFFFF;">TAQWA <span class="red-accent">MOTORS</span></span>
             </div>
           </a>
           <p>
@@ -853,7 +828,9 @@
           <div class="footer-contact-list">
             <div class="footer-contact-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              <span>H2X7+VP4 Range Road, Chowk, Shalley Valley, Rawalpindi, Pakistan</span>
+              <a href="https://maps.app.goo.gl/vJhtE2vLmomiwnxz7?g_st=ac" target="_blank" rel="noopener noreferrer" style="color:inherit;">
+                Range Road, Chowk, Shalley Valley, Rawalpindi 46000, Pakistan
+              </a>
             </div>
             <div class="footer-contact-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
@@ -873,7 +850,7 @@
         </div>
         <div style="display:flex; align-items:center; gap:16px; flex-wrap: wrap;">
           <span>Where Trust Drives Everything</span>
-          <a href="admin/login.html" class="btn btn-outline btn-sm" style="border-color: rgba(211,47,47,0.6); background: rgba(211,47,47,0.1); color: #FFFFFF; padding: 6px 14px; font-size: 0.82rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;" title="Authorized Dealership Staff & Admin Portal">
+          <a href="admin/login.html" class="btn btn-outline-red btn-sm" style="background: rgba(211,47,47,0.15); color: #FFFFFF; padding: 5px 12px; font-size: 0.8rem;" title="Authorized Dealership Staff & Admin Portal">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             Admin Portal
           </a>
@@ -883,7 +860,7 @@
   </footer>
 
   <!-- ========================================================================
-       13. VEHICLE DETAILS MODAL
+       12. VEHICLE DETAILS MODAL
        ======================================================================== -->
   <div class="modal-backdrop" id="vehicleModal" onclick="if(event.target === this) window.closeCarModal()">
     <div class="modal-container">
@@ -904,12 +881,12 @@
             <div class="inspection-left">
               <span class="inspection-icon">🛡️</span>
               <div>
-                <div style="font-size:0.75rem; color:#94A3B8; text-transform:uppercase; font-weight:700;">Condition Rating</div>
-                <div class="inspection-score-num" id="modalInspectionScore">Certified 9.8/10</div>
+                <div style="font-size:0.75rem; color:#059669; text-transform:uppercase; font-weight:700;">Condition Rating</div>
+                <div class="inspection-score-num" id="modalInspectionScore">Verified Quality</div>
               </div>
             </div>
-            <div id="modalInspectionDetails" style="font-size:0.8rem; color:#CBD5E1; text-align:right; max-width:180px;">
-              100% Genuine Paint Guaranteed
+            <div id="modalInspectionDetails" style="font-size:0.8rem; color:#334155; text-align:right; max-width:180px;">
+              Inspected & Verified
             </div>
           </div>
         </div>
@@ -917,30 +894,30 @@
         <!-- Info Column -->
         <div class="modal-info-col">
           <div class="modal-vehicle-header">
-            <h2 class="modal-car-name" id="modalCarTitle">2023 Toyota Fortuner Legender</h2>
-            <div id="modalCarVariant" style="color: #94A3B8; font-size: 0.95rem; margin-top: 4px;">2.8 Sigma 4 • Islamabad Registered</div>
-            <div class="modal-car-price" id="modalCarPrice">PKR 1.98 Crore</div>
+            <h2 class="modal-car-name" id="modalCarTitle">Loading Vehicle...</h2>
+            <div id="modalCarVariant" style="color: var(--text-dark-muted); font-size: 0.95rem; margin-top: 4px;">-</div>
+            <div class="modal-car-price" id="modalCarPrice">Rs. 0</div>
           </div>
 
           <!-- Description -->
-          <p id="modalCarDesc" style="color: #CBD5E1; font-size: 0.92rem; line-height: 1.6; margin-bottom: 20px;">
-            Professional description here...
+          <p id="modalCarDesc" style="color: var(--text-dark-secondary); font-size: 0.92rem; line-height: 1.6; margin-bottom: 20px;">
+            Description
           </p>
 
           <!-- Key Highlights -->
-          <h4 style="font-size: 0.9rem; color: #94A3B8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom: 8px;">Key Highlights</h4>
+          <h4 style="font-size: 0.85rem; color: var(--text-dark-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom: 8px;">Key Highlights</h4>
           <div class="features-tags-list" id="modalKeySpecs">
             <!-- Key specs -->
           </div>
 
           <!-- Spec Matrix Table -->
-          <h4 style="font-size: 0.9rem; color: #94A3B8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom: 8px;">Vehicle Specifications</h4>
+          <h4 style="font-size: 0.85rem; color: var(--text-dark-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom: 8px;">Vehicle Specifications</h4>
           <div class="spec-matrix-grid" id="modalSpecMatrix">
             <!-- Spec items -->
           </div>
 
           <!-- Categorized Features -->
-          <h4 style="font-size: 0.9rem; color: #94A3B8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom: 8px;">Standard & Safety Features</h4>
+          <h4 style="font-size: 0.85rem; color: var(--text-dark-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom: 8px;">Standard & Safety Features</h4>
           <div class="features-tags-list" id="modalFeaturesList">
             <!-- Feature pills -->
           </div>
@@ -967,7 +944,7 @@
   </div>
 
   <!-- ========================================================================
-       14. VEHICLE COMPARISON DRAWER & MODAL
+       13. VEHICLE COMPARISON DRAWER & MODAL
        ======================================================================== -->
   <div class="compare-floating-bar" id="compareFloatingBar">
     <div style="display: flex; align-items: center; gap: 12px;">
@@ -984,18 +961,17 @@
     <div class="modal-container" style="max-width: 1100px;">
       <button class="modal-close-btn" onclick="document.getElementById('comparisonModal').classList.remove('active')" aria-label="Close comparison">✕</button>
       <div style="padding: 32px;">
-        <h2 style="font-size: 1.8rem; margin-bottom: 20px; color: #FFFFFF;">Side-by-Side Vehicle Comparison</h2>
+        <h2 style="font-size: 1.8rem; margin-bottom: 20px; color: var(--text-dark);">Side-by-Side Vehicle Comparison</h2>
         <div id="comparisonTableContent"></div>
       </div>
     </div>
   </div>
 
   <!-- ========================================================================
-       15. FLOATING WHATSAPP TRIGGER & SALES DESK
+       14. FLOATING WHATSAPP TRIGGER & SALES DESK
        ======================================================================== -->
   <div class="floating-whatsapp-trigger" id="whatsappTrigger" title="Chat with Taqwa Motors on WhatsApp">
-    <div class="floating-whatsapp-pulse"></div>
-    <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
   </div>
 
   <div class="whatsapp-chat-box" id="whatsappChatBox">
@@ -1004,7 +980,7 @@
         <img src="assets/logo/taqwa-logo.png" alt="Taqwa Motors" class="chat-agent-avatar">
         <div>
           <div class="chat-agent-name">Taqwa Motors Sales Desk</div>
-          <div class="chat-agent-status">🟢 Online • Replies in &lt;5 mins</div>
+          <div class="chat-agent-status">🟢 Online • Range Road Rawalpindi</div>
         </div>
       </div>
       <button id="closeChatBox" style="color: #FFFFFF; font-size: 1.2rem; cursor: pointer; background:none;">✕</button>
@@ -1012,7 +988,7 @@
 
     <div class="chat-box-body">
       <div class="chat-bubble-received">
-        Assalam-o-Alaikum! Welcome to Taqwa Motors Rawalpindi. How can we assist you with your dream car today?
+        Assalam-o-Alaikum! Welcome to Taqwa Motors Rawalpindi. How can we assist you today?
       </div>
 
       <div class="chat-quick-actions-list">

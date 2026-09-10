@@ -107,7 +107,7 @@
                   type="text" 
                   id="inventorySearchInput" 
                   class="admin-input-search" 
-                  placeholder="Search by Stock Number, Make, Model, Registration, or Chassis..."
+                  placeholder="Search by Make, Model, Registration, or Chassis..."
                 >
               </div>
               <button type="button" id="resetFiltersBtn" class="btn-secondary" title="Reset all filters">
@@ -146,9 +146,8 @@
                 <select id="filterStatus" class="admin-select">
                   <option value="">All Statuses</option>
                   <option value="available">Available</option>
-                  <option value="reserved">Reserved</option>
                   <option value="sold">Sold</option>
-                  <option value="hidden">Hidden / Archive</option>
+                  <option value="cancelled">Cancelled</option>
                 </select>
               </div>
 
@@ -173,17 +172,17 @@
               </div>
 
               <div>
-                <input type="number" id="filterMinPrice" class="admin-input" placeholder="Min Price (PKR)" step="100000">
+                <input type="number" id="filterMinPrice" class="admin-input" placeholder="Min Price (PKR)" step="any">
               </div>
 
               <div>
-                <input type="number" id="filterMaxPrice" class="admin-input" placeholder="Max Price (PKR)" step="100000">
+                <input type="number" id="filterMaxPrice" class="admin-input" placeholder="Max Price (PKR)" step="any">
               </div>
             </form>
           </div>
 
           <!-- Header summary bar -->
-          <div class="card-header-bar" style="background: rgba(255,255,255,0.01);">
+          <div class="card-header-bar" style="background: rgba(0,0,0,0.02);">
             <div style="display: flex; align-items: center; gap: 0.75rem;">
               <h2>Dealership Vehicles</h2>
               <span class="stock-tag" id="inventoryCountBadge">0 Vehicles</span>
@@ -207,7 +206,7 @@
               <thead>
                 <tr>
                   <th>Vehicle Info</th>
-                  <th>Stock #</th>
+                  <th>Condition & Import</th>
                   <th>Private IDs (Reg / Chassis)</th>
                   <th>Mileage</th>
                   <th>Asking Price</th>

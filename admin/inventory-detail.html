@@ -101,27 +101,25 @@
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
               <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.35rem;">
-                <span class="stock-tag" id="detailStockTag">TM-000</span>
                 <span id="detailStatusBadge" class="status-badge available">
                   <span class="status-dot"></span>
                   <span>Available</span>
                 </span>
               </div>
-              <h1 id="detailTitle" style="font-family: var(--font-heading); font-size: 1.65rem; font-weight: 800; color: #FFFFFF;">Loading Vehicle...</h1>
+              <h1 id="detailTitle" style="font-family: var(--font-heading); font-size: 1.65rem; font-weight: 800; color: var(--admin-text-main);">Loading Vehicle...</h1>
             </div>
 
             <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
               <div>
                 <div style="font-size: 0.75rem; color: var(--admin-text-muted); text-transform: uppercase; font-weight: 600;">Asking Price</div>
-                <div id="detailPrice" style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: #FFFFFF;">PKR 0</div>
+                <div id="detailPrice" style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--admin-primary);">PKR 0</div>
               </div>
 
               <div style="display: flex; gap: 0.5rem; align-items: center;">
-                <select id="quickStatusSelect" class="admin-select" style="width: auto;" onchange="handleDetailStatusChange(this.value)">
+                <select id="quickStatusSelect" class="admin-select" style="width: auto; font-weight:600;" onchange="handleDetailStatusChange(this.value)">
                   <option value="available">Available</option>
-                  <option value="reserved">Reserved</option>
                   <option value="sold">Sold</option>
-                  <option value="hidden">Hidden / Archive</option>
+                  <option value="cancelled">Cancelled</option>
                 </select>
 
                 <a id="editVehicleBtn" href="#" class="btn-primary">
@@ -186,32 +184,32 @@
 
             <!-- Right Column: Specs & Confidential Identifiers -->
             <div>
-              <div class="content-card" style="padding: 1.5rem; border: 1px solid rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.03);">
+              <div class="content-card" style="padding: 1.5rem; border: 1px solid rgba(220, 38, 38, 0.2); background: #FFF5F5;">
                 <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
-                  <i data-lucide="shield-alert" style="width: 20px; height: 20px; color: #F87171;"></i>
-                  <h2 style="font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: #FCA5A5;">Private Identifiers (Admin Only)</h2>
+                  <i data-lucide="shield-alert" style="width: 20px; height: 20px; color: #DC2626;"></i>
+                  <h2 style="font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: #DC2626;">Private Identifiers (Admin Only)</h2>
                 </div>
                 <p style="font-size: 0.78rem; color: var(--admin-text-muted); margin-bottom: 1.25rem;">
                   Protected by Row Level Security and hidden from public website visitors.
                 </p>
 
                 <div style="display: flex; flex-direction: column; gap: 0.85rem;">
-                  <div class="spec-item" style="background: rgba(0,0,0,0.3);">
+                  <div class="spec-item" style="background: #FFFFFF;">
                     <div class="spec-label">Registration Number</div>
-                    <div id="privateRegNumber" class="spec-val" style="color: #60A5FA; font-family: var(--font-mono);">-</div>
+                    <div id="privateRegNumber" class="spec-val" style="color: #2563EB; font-family: var(--font-mono); font-weight: 700;">-</div>
                   </div>
 
-                  <div class="spec-item" style="background: rgba(0,0,0,0.3);">
+                  <div class="spec-item" style="background: #FFFFFF;">
                     <div class="spec-label">Chassis Number / VIN</div>
-                    <div id="privateChassisNumber" class="spec-val" style="color: #FBBF24; font-family: var(--font-mono);">-</div>
+                    <div id="privateChassisNumber" class="spec-val" style="color: #D97706; font-family: var(--font-mono); font-weight: 700;">-</div>
                   </div>
 
-                  <div class="spec-item" style="background: rgba(0,0,0,0.3);">
+                  <div class="spec-item" style="background: #FFFFFF;">
                     <div class="spec-label">Record Added</div>
                     <div id="privateCreatedDate" class="spec-val" style="font-size: 0.85rem; color: var(--admin-text-muted);">-</div>
                   </div>
 
-                  <div class="spec-item" style="background: rgba(0,0,0,0.3);">
+                  <div class="spec-item" style="background: #FFFFFF;">
                     <div class="spec-label">Last Updated</div>
                     <div id="privateUpdatedDate" class="spec-val" style="font-size: 0.85rem; color: var(--admin-text-muted);">-</div>
                   </div>
@@ -221,12 +219,14 @@
               <div class="content-card" style="padding: 1.5rem;">
                 <h2 style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Specifications</h2>
                 <div class="spec-list">
+                  <div class="spec-item"><div class="spec-label">Model Year</div><div id="specModelYear" class="spec-val">-</div></div>
+                  <div class="spec-item"><div class="spec-label">Year of Import</div><div id="specImportYear" class="spec-val">-</div></div>
+                  <div class="spec-item"><div class="spec-label">Condition</div><div id="specCondition" class="spec-val">-</div></div>
                   <div class="spec-item"><div class="spec-label">Mileage</div><div id="specMileage" class="spec-val">-</div></div>
                   <div class="spec-item"><div class="spec-label">Fuel Type</div><div id="specFuel" class="spec-val">-</div></div>
                   <div class="spec-item"><div class="spec-label">Transmission</div><div id="specTransmission" class="spec-val">-</div></div>
                   <div class="spec-item"><div class="spec-label">Exterior Color</div><div id="specColor" class="spec-val">-</div></div>
-                  <div class="spec-item"><div class="spec-label">Condition</div><div id="specCondition" class="spec-val">-</div></div>
-                  <div class="spec-item"><div class="spec-label">Featured</div><div id="specFeatured" class="spec-val">-</div></div>
+                  <div class="spec-item"><div class="spec-label">Featured Showcase</div><div id="specFeatured" class="spec-val">-</div></div>
                 </div>
               </div>
             </div>
@@ -257,7 +257,7 @@
               <div style="display: flex; align-items: center; gap: 1rem;">
                 <div>
                   <span style="font-size: 0.72rem; text-transform: uppercase; color: var(--admin-text-muted); font-weight: 700;">Total Expenses:</span>
-                  <span id="expensesTotalCounter" style="font-family: var(--font-heading); font-weight: 800; color: #FBBF24; font-size: 1.15rem; margin-left: 0.35rem;">PKR 0</span>
+                  <span id="expensesTotalCounter" style="font-family: var(--font-heading); font-weight: 800; color: #D97706; font-size: 1.15rem; margin-left: 0.35rem;">PKR 0</span>
                 </div>
                 <button type="button" class="btn-primary btn-sm" onclick="openAddExpenseModal()">
                   <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
@@ -325,22 +325,22 @@
             <div class="financial-summary-grid">
               <div class="fin-card">
                 <div class="fin-card-label">Purchase Price</div>
-                <div class="fin-card-val" id="finPurchaseVal" style="color: #60A5FA;">PKR 0</div>
+                <div class="fin-card-val" id="finPurchaseVal" style="color: #2563EB;">PKR 0</div>
               </div>
 
               <div class="fin-card">
                 <div class="fin-card-label">Total Expenses</div>
-                <div class="fin-card-val" id="finExpensesVal" style="color: #FBBF24;">PKR 0</div>
+                <div class="fin-card-val" id="finExpensesVal" style="color: #D97706;">PKR 0</div>
               </div>
 
               <div class="fin-card">
                 <div class="fin-card-label">Total Invested Cost</div>
-                <div class="fin-card-val" id="finTotalCostVal" style="color: #E2E8F0;">PKR 0</div>
+                <div class="fin-card-val" id="finTotalCostVal" style="color: var(--admin-text-main);">PKR 0</div>
               </div>
 
               <div class="fin-card">
                 <div class="fin-card-label">Sale Price</div>
-                <div class="fin-card-val" id="finSaleVal" style="color: #A78BFA;">Not Sold</div>
+                <div class="fin-card-val" id="finSaleVal" style="color: #7C3AED;">Not Sold</div>
               </div>
 
               <div class="fin-card" id="finCardProfit">
@@ -366,7 +366,7 @@
             </div>
 
             <!-- Upload Area -->
-            <div style="margin: 1.5rem 0; padding: 1.25rem; background: rgba(0,0,0,0.25); border-radius: var(--radius-md); border: 1px solid var(--admin-border);">
+            <div style="margin: 1.5rem 0; padding: 1.25rem; background: var(--admin-card-bg); border-radius: var(--radius-md); border: 1px solid var(--admin-border);">
               <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
                 <div style="flex: 1; min-width: 200px;">
                   <label class="form-label" style="margin-bottom: 0.35rem;">Document Category</label>
@@ -446,7 +446,7 @@
           <div class="form-grid-2" style="margin-bottom: 1rem;">
             <div class="form-group">
               <label for="purchasePrice" class="form-label">Purchase Cost (PKR) <span class="required-star">*</span></label>
-              <input type="number" id="purchasePrice" class="admin-input" placeholder="e.g. 15500000" min="0" required>
+              <input type="number" id="purchasePrice" class="admin-input" placeholder="e.g. 15500000" min="0" step="any" required>
             </div>
 
             <div class="form-group">
@@ -507,7 +507,7 @@
 
             <div class="form-group">
               <label for="expenseAmount" class="form-label">Amount (PKR) <span class="required-star">*</span></label>
-              <input type="number" id="expenseAmount" class="admin-input" placeholder="e.g. 45000" min="0" required>
+              <input type="number" id="expenseAmount" class="admin-input" placeholder="e.g. 45000" min="0" step="any" required>
             </div>
           </div>
 
@@ -548,10 +548,10 @@
           </div>
 
           <!-- Inline Create New Buyer toggle -->
-          <div style="margin-bottom: 1.25rem; padding: 0.85rem 1rem; background: rgba(255,255,255,0.02); border: 1px dashed var(--admin-border); border-radius: var(--radius-sm);">
+          <div style="margin-bottom: 1.25rem; padding: 0.85rem 1rem; background: var(--admin-card-bg); border: 1px dashed var(--admin-border); border-radius: var(--radius-sm);">
             <label class="checkbox-wrap" style="margin-bottom: 0.5rem;">
               <input type="checkbox" id="checkCreateNewCustomer" onchange="document.getElementById('newCustomerInlineFields').style.display = this.checked ? 'grid' : 'none'">
-              <span class="form-label" style="margin: 0; color: #60A5FA;">+ Or Register New Buyer Right Now</span>
+              <span class="form-label" style="margin: 0; color: var(--admin-primary); font-weight:600;">+ Or Register New Buyer Right Now</span>
             </label>
 
             <div id="newCustomerInlineFields" class="form-grid-3" style="display: none; margin-top: 0.75rem;">
@@ -571,17 +571,17 @@
           <div class="form-grid-3" style="margin-bottom: 1rem;">
             <div class="form-group">
               <label for="salePriceInput" class="form-label">Agreed Sale Price (PKR) <span class="required-star">*</span></label>
-              <input type="number" id="salePriceInput" class="admin-input" placeholder="e.g. 18500000" min="0" required>
+              <input type="number" id="salePriceInput" class="admin-input" placeholder="e.g. 18500000" min="0" step="any" required>
             </div>
 
             <div class="form-group">
               <label for="saleAmountReceived" class="form-label">Amount Received (PKR) <span class="required-star">*</span></label>
-              <input type="number" id="saleAmountReceived" class="admin-input" placeholder="e.g. 18500000" min="0" required>
+              <input type="number" id="saleAmountReceived" class="admin-input" placeholder="e.g. 18500000" min="0" step="any" required>
             </div>
 
             <div class="form-group">
               <label class="form-label">Remaining Balance</label>
-              <input type="text" id="saleRemainingDisplay" class="admin-input" readonly style="background: rgba(0,0,0,0.3); color: #34D399; font-weight: 700;">
+              <input type="text" id="saleRemainingDisplay" class="admin-input" readonly style="background: #F8FAFC; color: #059669; font-weight: 700;">
             </div>
           </div>
 
@@ -609,7 +609,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-secondary" onclick="closeSaleModal()">Cancel</button>
-          <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">Complete Sale</button>
+          <button type="submit" class="btn-primary" style="background: #059669; border-color: #059669;">Complete Sale</button>
         </div>
       </form>
     </div>

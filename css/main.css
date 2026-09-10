@@ -1,77 +1,70 @@
 /* ==========================================================================
    TAQWA MOTORS - PREMIUM AUTOMOTIVE DESIGN SYSTEM
    "Where Trust Drives Everything"
-   Derived directly from the Taqwa Motors Logo
+   Clean White + Taqwa Red + Dark Typography Design System
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800;900&display=swap');
 
 :root {
-  /* Brand Colors Extracted Directly From Logo */
+  /* Brand Colors */
   --primary-red: #D32F2F;
   --primary-red-hover: #B71C1C;
-  --primary-red-glow: rgba(211, 47, 47, 0.45);
-  --primary-red-light: rgba(211, 47, 47, 0.12);
+  --primary-red-glow: rgba(211, 47, 47, 0.3);
+  --primary-red-light: rgba(211, 47, 47, 0.08);
 
   --brand-navy: #0B1120;
   --brand-blue: #1E3A8A;
   --brand-blue-accent: #2563EB;
-  --brand-blue-glow: rgba(37, 99, 235, 0.35);
 
-  --brand-purple: #7C3AED;
-  --brand-orange: #F97316;
-  --brand-gold: #F59E0B;
+  /* Surfaces & Clean White Theme Base */
+  --bg-white: #FFFFFF;
+  --bg-light: #F8FAFC;
+  --bg-light-alt: #F1F5F9;
+  --bg-card-white: #FFFFFF;
+  --border-light: #E2E8F0;
+  --border-light-hover: #CBD5E1;
 
-  /* Logo Signature Multi-Color Spectrum Gradient */
-  --logo-gradient: linear-gradient(135deg, #1E40AF 0%, #7C3AED 32%, #DC2626 68%, #F97316 100%);
-  --logo-gradient-h: linear-gradient(90deg, #1E40AF 0%, #7C3AED 33%, #DC2626 67%, #F97316 100%);
-  --logo-gradient-radial: radial-gradient(circle, #DC2626 0%, #7C3AED 50%, #1E40AF 100%);
-
-  /* Deep Luxury Dark Theme Palette */
-  --bg-dark: #070A12;
-  --bg-dark-surface: #0D1322;
+  /* Dark Luxury Accents for Hero/Footer */
+  --bg-dark: #090D16;
+  --bg-dark-surface: #0F172A;
   --bg-card: #131B2E;
   --bg-card-hover: #18233C;
-  --bg-card-elevated: #1D2A47;
   
-  /* Glassmorphism Tokens */
-  --glass-bg: rgba(13, 19, 34, 0.82);
-  --glass-card: rgba(19, 27, 46, 0.75);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-hover: rgba(211, 47, 47, 0.4);
-  --glass-border-blue: rgba(37, 99, 235, 0.3);
-
   /* Typography & Neutrals */
+  --text-dark: #0F172A;
+  --text-dark-secondary: #334155;
+  --text-dark-muted: #64748B;
   --text-primary: #FFFFFF;
   --text-secondary: #CBD5E1;
-  --text-muted: #8492A6;
-  --text-dark: #0F172A;
+  --text-muted: #94A3B8;
 
   /* Functional Accents */
   --whatsapp-green: #25D366;
   --whatsapp-green-hover: #20BA5A;
-  --whatsapp-glow: rgba(37, 211, 102, 0.4);
-  --star-gold: #FBBF24;
-  --badge-blue: #3B82F6;
-  --badge-emerald: #10B981;
+  --star-gold: #F59E0B;
+  --badge-emerald: #059669;
+  --badge-blue: #2563EB;
+  --badge-amber: #D97706;
 
   /* Layout & Geometry */
   --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.65);
-  --shadow-red: 0 10px 30px rgba(211, 47, 47, 0.35);
-  --shadow-gold: 0 10px 30px rgba(245, 158, 11, 0.25);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 12px 28px rgba(15, 23, 42, 0.12);
+  --shadow-red: 0 4px 14px rgba(211, 47, 47, 0.35);
 
-  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-heading: 'Outfit', 'Plus Jakarta Sans', sans-serif;
@@ -96,8 +89,8 @@ html {
 
 body {
   font-family: var(--font-body);
-  background-color: var(--bg-dark);
-  color: var(--text-primary);
+  background-color: var(--bg-white);
+  color: var(--text-dark);
   line-height: 1.6;
   width: 100%;
   max-width: 100%;
@@ -111,22 +104,22 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 700;
-  line-height: 1.2;
-  color: var(--text-primary);
+  line-height: 1.25;
+  color: var(--text-dark);
   letter-spacing: -0.02em;
   word-break: break-word;
 }
 
-h1 { font-size: clamp(2rem, 5vw, 4.2rem); font-weight: 900; }
-h2 { font-size: clamp(1.6rem, 3.5vw, 2.8rem); }
-h3 { font-size: clamp(1.2rem, 2.2vw, 1.75rem); }
-h4 { font-size: 1.2rem; font-weight: 600; }
-h5 { font-size: 1.05rem; }
-h6 { font-size: 0.92rem; }
+h1 { font-size: clamp(2rem, 5vw, 4rem); font-weight: 900; }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.6rem); }
+h3 { font-size: clamp(1.15rem, 2.2vw, 1.65rem); }
+h4 { font-size: 1.15rem; font-weight: 600; }
+h5 { font-size: 1.02rem; }
+h6 { font-size: 0.9rem; }
 
 p {
-  color: var(--text-secondary);
-  font-size: 1rem;
+  color: var(--text-dark-secondary);
+  font-size: 0.98rem;
   word-break: break-word;
 }
 
@@ -144,7 +137,7 @@ img, video {
 
 button, input, select, textarea {
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.95rem;
   border: none;
   outline: none;
   max-width: 100%;
@@ -186,30 +179,47 @@ ul, ol {
 
 /* Section Wrapper */
 .section {
-  padding: 80px 0;
+  padding: 72px 0;
   position: relative;
   overflow: hidden;
+  background-color: var(--bg-white);
 }
 
 @media (max-width: 768px) {
   .section {
-    padding: 50px 0;
+    padding: 44px 0;
   }
+}
+
+.section-light {
+  background-color: var(--bg-light);
 }
 
 .section-dark-surface {
   background-color: var(--bg-dark-surface);
+  color: var(--text-primary);
+}
+
+.section-dark-surface h2,
+.section-dark-surface h3,
+.section-dark-surface h4,
+.section-dark-surface p {
+  color: var(--text-primary);
+}
+
+.section-dark-surface p {
+  color: var(--text-secondary);
 }
 
 .section-header {
   text-align: center;
-  max-width: 780px;
-  margin: 0 auto 48px;
+  max-width: 760px;
+  margin: 0 auto 40px;
 }
 
 @media (max-width: 768px) {
   .section-header {
-    margin-bottom: 32px;
+    margin-bottom: 28px;
   }
 }
 
@@ -217,56 +227,74 @@ ul, ol {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 16px;
+  padding: 5px 14px;
   border-radius: var(--radius-full);
   background: var(--primary-red-light);
-  border: 1px solid rgba(211, 47, 47, 0.3);
-  color: #FF6B6B;
-  font-size: 0.82rem;
+  border: 1px solid rgba(211, 47, 47, 0.2);
+  color: var(--primary-red);
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   max-width: 100%;
 }
 
 .section-tag.tag-blue {
-  background: rgba(37, 99, 235, 0.12);
-  border-color: rgba(37, 99, 235, 0.3);
-  color: #60A5FA;
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.2);
+  color: var(--brand-blue-accent);
 }
 
-.section-tag.tag-gradient {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background-image: var(--logo-gradient-h);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.section-title {
-  margin-bottom: 14px;
-}
-
-.section-title .text-gradient {
-  background: var(--logo-gradient-h);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.section-title .text-red {
+.section-tag.tag-gradient,
+.section-tag.tag-dark {
+  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid var(--border-light);
   color: var(--primary-red);
 }
 
+.section-title {
+  margin-bottom: 12px;
+  color: var(--text-dark);
+}
+
+.section-dark-surface .section-title {
+  color: #FFFFFF;
+}
+
+/* NO GRADIENT TEXT - SOLID COLORS */
+.section-title .text-gradient,
+.text-gradient {
+  color: var(--primary-red);
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: var(--primary-red) !important;
+  font-weight: 800;
+}
+
+.section-title .text-red,
+.text-red {
+  color: var(--primary-red);
+}
+
+.section-title .text-dark,
+.text-dark {
+  color: var(--text-dark);
+}
+
 .section-subtitle {
-  font-size: 1.05rem;
-  color: var(--text-secondary);
+  font-size: 1.02rem;
+  color: var(--text-dark-muted);
   line-height: 1.6;
+}
+
+.section-dark-surface .section-subtitle {
+  color: var(--text-muted);
 }
 
 @media (max-width: 768px) {
   .section-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
 }
 
@@ -275,12 +303,11 @@ ul, ol {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-dark);
+  background: #F1F5F9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #CBD5E1;
   border-radius: 4px;
-  border: 2px solid var(--bg-dark);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-red);

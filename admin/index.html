@@ -15,9 +15,7 @@
 <body>
 
   <div class="admin-layout">
-    <!-- ========================================================================
-         SIDEBAR NAVIGATION
-         ======================================================================== -->
+    <!-- Sidebar Navigation -->
     <aside class="admin-sidebar" id="adminSidebar">
       <a href="index.html" class="sidebar-brand">
         <img src="../assets/logo/taqwa-logo.png" alt="Taqwa Motors" class="sidebar-logo-img" onerror="this.style.display='none'">
@@ -73,9 +71,7 @@
       </div>
     </aside>
 
-    <!-- ========================================================================
-         MAIN CONTENT AREA
-         ======================================================================== -->
+    <!-- Main Content Area -->
     <main class="admin-main">
       <!-- Top Header -->
       <header class="admin-header">
@@ -122,16 +118,6 @@
             </div>
           </div>
 
-          <div class="kpi-card kpi-reserved">
-            <div class="kpi-info">
-              <p>Reserved</p>
-              <div class="kpi-number" id="kpiReserved">-</div>
-            </div>
-            <div class="kpi-icon-wrap">
-              <i data-lucide="clock" style="width: 24px; height: 24px;"></i>
-            </div>
-          </div>
-
           <div class="kpi-card kpi-sold">
             <div class="kpi-info">
               <p>Sold</p>
@@ -139,6 +125,16 @@
             </div>
             <div class="kpi-icon-wrap">
               <i data-lucide="tag" style="width: 24px; height: 24px;"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card kpi-reserved">
+            <div class="kpi-info">
+              <p>Cancelled</p>
+              <div class="kpi-number" id="kpiCancelled">-</div>
+            </div>
+            <div class="kpi-icon-wrap">
+              <i data-lucide="slash" style="width: 24px; height: 24px;"></i>
             </div>
           </div>
         </div>
@@ -173,7 +169,7 @@
               <thead>
                 <tr>
                   <th>Vehicle</th>
-                  <th>Stock No.</th>
+                  <th>Condition & Import</th>
                   <th>Mileage</th>
                   <th>Asking Price</th>
                   <th>Status</th>

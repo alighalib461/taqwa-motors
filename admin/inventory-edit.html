@@ -110,11 +110,6 @@
 
             <div class="form-grid-3">
               <div class="form-group">
-                <label for="vehicleStockNumber" class="form-label">Stock Number <span class="required-star">*</span></label>
-                <input type="text" id="vehicleStockNumber" class="admin-input" placeholder="e.g. TM-101" required>
-              </div>
-
-              <div class="form-group">
                 <label for="vehicleMake" class="form-label">Make / Brand <span class="required-star">*</span></label>
                 <input type="text" id="vehicleMake" class="admin-input" placeholder="e.g. Toyota, Honda" required list="makeSuggestions">
                 <datalist id="makeSuggestions">
@@ -128,6 +123,7 @@
                   <option value="Mercedes-Benz">
                   <option value="BMW">
                   <option value="Nissan">
+                  <option value="Daihatsu">
                 </datalist>
               </div>
 
@@ -147,14 +143,13 @@
               </div>
 
               <div class="form-group">
+                <label for="vehicleImportYear" class="form-label">Year of Import</label>
+                <input type="number" id="vehicleImportYear" class="admin-input" placeholder="e.g. 2024" min="1900" max="2100">
+              </div>
+
+              <div class="form-group">
                 <label for="vehicleCondition" class="form-label">Condition</label>
-                <input type="text" id="vehicleCondition" class="admin-input" placeholder="e.g. Unregistered Import, Local Used" list="conditionSuggestions">
-                <datalist id="conditionSuggestions">
-                  <option value="Brand New">
-                  <option value="Unregistered Japanese Import">
-                  <option value="Certified Pre-Owned">
-                  <option value="Local Used">
-                </datalist>
+                <input type="text" id="vehicleCondition" class="admin-input" placeholder="e.g. Unregistered Japanese Import, Total Genuine, 4.5 Grade">
               </div>
             </div>
           </div>
@@ -230,23 +225,22 @@
             <div class="form-grid-3">
               <div class="form-group">
                 <label for="vehiclePrice" class="form-label">Asking Price (PKR) <span class="required-star">*</span></label>
-                <input type="number" id="vehiclePrice" class="admin-input" placeholder="e.g. 18500000" min="0" step="10000" required>
+                <input type="number" id="vehiclePrice" class="admin-input" placeholder="e.g. 2575 or 18500000" min="0" step="any" required>
               </div>
 
               <div class="form-group">
                 <label for="vehicleStatus" class="form-label">Status</label>
                 <select id="vehicleStatus" class="admin-select">
                   <option value="available">Available</option>
-                  <option value="reserved">Reserved</option>
                   <option value="sold">Sold</option>
-                  <option value="hidden">Hidden / Archived</option>
+                  <option value="cancelled">Cancelled</option>
                 </select>
               </div>
 
               <div class="form-group" style="justify-content: flex-end; padding-bottom: 0.65rem;">
                 <label class="checkbox-wrap">
                   <input type="checkbox" id="vehicleFeatured">
-                  <span class="form-label" style="margin: 0; color: #FBBF24;">★ Mark as Featured Showcase Car</span>
+                  <span class="form-label" style="margin: 0; color: #DC2626; font-weight: 600;">★ Mark as Featured Showcase Car</span>
                 </label>
               </div>
 

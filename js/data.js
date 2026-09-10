@@ -2,9 +2,10 @@
  * Taqwa Motors - Dataset & Configuration
  * Rawalpindi, Pakistan
  * Phone / WhatsApp: 0333-5406173
- * Showroom: Range Road Chowk, Shalley Valley, Rawalpindi
+ * Showroom: Range Road, Chowk, Shalley Valley, Rawalpindi 46000, Pakistan
+ * Google Maps: https://maps.app.goo.gl/vJhtE2vLmomiwnxz7?g_st=ac
  * 
- * Note: Vehicle Inventory is synced dynamically from the Supabase public_inventory view.
+ * Note: Vehicle Inventory is synced dynamically from the Supabase database.
  */
 
 // Initial inventory state (dynamically populated from Supabase)
@@ -92,7 +93,7 @@ const FAQS_DATA = [
   },
   {
     q: "Where is Taqwa Motors located in Rawalpindi?",
-    a: "Our prime showroom is located at Range Road Chowk, Shalley Valley, Rawalpindi (Google Plus Code: H2X7+VP4). We are easily accessible from Peshawar Road, Saddar, Westridge, and Islamabad via I.J.P Road."
+    a: "Our prime showroom is located at Range Road, Chowk, Shalley Valley, Rawalpindi 46000, Pakistan. We are easily accessible from Peshawar Road, Saddar, Westridge, and Islamabad via I.J.P Road."
   },
   {
     q: "What are your showroom business hours?",
@@ -100,11 +101,11 @@ const FAQS_DATA = [
   },
   {
     q: "Do you offer car trade-ins / vehicle exchange?",
-    a: "Yes! Bring your current vehicle to our showroom for a comprehensive 15-minute evaluation. We offer guaranteed fair market value that can be deducted directly toward your next car purchase."
+    a: "Yes! Bring your current vehicle to our showroom for a comprehensive evaluation. We offer guaranteed fair market value that can be deducted directly toward your next car purchase."
   },
   {
     q: "Do you assist buyers from other cities (Lahore, Peshawar, Faisalabad)?",
-    a: "Absolutely. Over 30% of our buyers come from outside Rawalpindi/Islamabad. We provide comprehensive HD video walkthroughs, third-party inspection facilitation, and nationwide insured enclosed car carrier delivery to your doorstep."
+    a: "Absolutely. Over 30% of our buyers come from outside Rawalpindi/Islamabad. We provide comprehensive HD video walkthroughs, third-party inspection facilitation, and nationwide insured car carrier delivery to your doorstep."
   }
 ];
 
